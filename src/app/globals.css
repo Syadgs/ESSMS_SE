@@ -1,0 +1,69 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
+
+@import "tailwindcss";
+
+@theme {
+  --color-navy-950: #050f1c;
+  --color-navy-900: #0f2744;
+  --color-navy-800: #1a3a5c;
+  --color-navy-700: #234d7a;
+  --color-amber-400: #fbbf24;
+  --color-amber-500: #f59e0b;
+  --color-background: #f8fafc;
+  --color-foreground: #0f172a;
+  --color-card: #ffffff;
+  --color-card-foreground: #0f172a;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #0f172a;
+  --color-primary: #0f2744;
+  --color-primary-foreground: #f8fafc;
+  --color-secondary: #f1f5f9;
+  --color-secondary-foreground: #0f172a;
+  --color-muted: #f1f5f9;
+  --color-muted-foreground: #64748b;
+  --color-accent: #f59e0b;
+  --color-accent-foreground: #0f172a;
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #f8fafc;
+  --color-border: #e2e8f0;
+  --color-input: #e2e8f0;
+  --color-ring: #0f2744;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    font-family: "DM Sans", sans-serif;
+    @apply bg-background text-foreground antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: "DM Serif Display", serif;
+  }
+
+  .font-mono {
+    font-family: "JetBrains Mono", monospace;
+  }
+}
+
+@layer components {
+  .sidebar {
+    background: linear-gradient(180deg, #0f2744 0%, #050f1c 100%);
+  }
+
+  .doc-number {
+    @apply font-mono text-sm tracking-wider bg-amber-50 text-amber-700 px-2 py-0.5 rounded-md border border-amber-200;
+  }
+
+  .status-chip {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold uppercase tracking-wide;
+  }
+}
