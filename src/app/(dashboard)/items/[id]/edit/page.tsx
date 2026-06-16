@@ -26,7 +26,7 @@ export default async function EditItemPage({ params }: EditItemPageProps) {
       />
       <PageHeader
         title="Edit Item"
-        description={`Perbarui data untuk ${item.itemName}`}
+        description={`Update data for ${item.itemName}`}
       />
       <ItemForm
         itemId={id}

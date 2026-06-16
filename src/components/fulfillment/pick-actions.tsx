@@ -39,14 +39,14 @@ export function PickActions({ pickId, status, canManage, hasPackOrder }: PickAct
   return (
     <div className="flex gap-2 flex-wrap">
       {status === "DRAFT" && (
-        <ActionButton label="Mulai Picking" action={() => startPickOrder(pickId)} />
+        <ActionButton label="Start Picking" action={() => startPickOrder(pickId)} />
       )}
       {status === "IN_PROGRESS" && (
-        <ActionButton label="Selesaikan Picking" action={() => completePickOrder(pickId)} />
+        <ActionButton label="Completedkan Picking" action={() => completePickOrder(pickId)} />
       )}
       {status === "COMPLETED" && !hasPackOrder && (
         <Button onClick={handleCreatePack} disabled={isPending}>
-          {isPending ? "Membuat..." : "Buat Pack Order"}
+          {isPending ? "Creating..." : "Create Pack Order"}
         </Button>
       )}
     </div>

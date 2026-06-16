@@ -8,6 +8,8 @@ import { StatusBadge } from "@/components/shared/status-badge"
 import { DocumentTimeline, INVOICE_TIMELINE } from "@/components/shared/document-timeline"
 import { LineItemsTable } from "@/components/shared/line-items-table"
 import { InvoiceActions } from "@/components/invoices/invoice-actions"
+import { Button } from "@/components/ui/button"
+import { Download } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import type { Role } from "@prisma/client"
 
@@ -52,14 +54,22 @@ export default async function InvoiceDetailPage({
             <StatusBadge status={invoice.status} />
           </div>
           <p className="text-sm text-muted-foreground mt-2">
-            Dibuat {formatDate(invoice.invoiceDate)} oleh {invoice.createdBy.name}
+            Created {formatDate(invoice.invoiceDate)} by {invoice.createdBy.name}
           </p>
         </div>
-        <InvoiceActions
-          invoiceId={invoice.id}
-          status={invoice.status}
-          canCreate={hasPermission(role, "invoices", "create")}
-        />
+        <div className="flex items-center gap-2">
+          <Button asChild variant="outline">
+            <a href={`/api/invoices/${invoice.id}/pdf`} target="_blank" rel="noreferrer">
+              <Download className="h-4 w-4 mr-2" />
+              Download PDF
+            </a>
+          </Button>
+          <InvoiceActions
+            invoiceId={invoice.id}
+            status={invoice.status}
+            canCreate={hasPermission(role, "invoices", "create")}
+          />
+        </div>
       </div>
 
       <Card className="mb-6">
@@ -71,7 +81,7 @@ export default async function InvoiceDetailPage({
       <div className="grid gap-4 md:grid-cols-2 mb-6">
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Informasi Customer</CardTitle>
+            <CardTitle className="text-base">Information Customer</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2 text-sm">
             <p><span className="text-muted-foreground">Nama:</span> {invoice.customer.customerName}</p>
@@ -80,7 +90,7 @@ export default async function InvoiceDetailPage({
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Informasi Dokumen</CardTitle>
+            <CardTitle className="text-base">Information Dokumen</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2 text-sm">
             <p>
@@ -88,7 +98,7 @@ export default async function InvoiceDetailPage({
               <span className="doc-number">{invoice.salesOrder.soNumber}</span>
             </p>
             <p>
-              <span className="text-muted-foreground">Jatuh Tempo:</span>{" "}
+              <span className="text-muted-foreground">Overdue:</span>{" "}
               {formatDate(invoice.dueDate)}
             </p>
             <p>
@@ -96,7 +106,7 @@ export default async function InvoiceDetailPage({
               {formatCurrency(invoice.paidAmount)}
             </p>
             {invoice.notes && (
-              <p><span className="text-muted-foreground">Catatan:</span> {invoice.notes}</p>
+              <p><span className="text-muted-foreground">Notes:</span> {invoice.notes}</p>
             )}
           </CardContent>
         </Card>

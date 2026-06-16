@@ -26,7 +26,7 @@ export function SalesChart({ data }: SalesChartProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg font-serif">Penjualan 6 Bulan Terakhir</CardTitle>
+        <CardTitle className="text-lg font-serif">Sales — Last 6 Months</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="h-[300px] w-full">

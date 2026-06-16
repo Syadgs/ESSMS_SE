@@ -56,7 +56,7 @@ export function InvoiceForm({ salesOrders }: InvoiceFormProps) {
         <Label>Sales Order *</Label>
         <Select value={soId} onValueChange={setSoId} required>
           <SelectTrigger>
-            <SelectValue placeholder="Pilih SO" />
+            <SelectValue placeholder="Select SO" />
           </SelectTrigger>
           <SelectContent>
             {salesOrders.map((so) => (
@@ -75,21 +75,21 @@ export function InvoiceForm({ salesOrders }: InvoiceFormProps) {
       )}
 
       <div className="space-y-2">
-        <Label>Jatuh Tempo *</Label>
+        <Label>Overdue *</Label>
         <Input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} required />
       </div>
 
       <div className="space-y-2">
-        <Label>Catatan</Label>
+        <Label>Notes</Label>
         <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} />
       </div>
 
       <div className="flex gap-2">
         <Button type="button" variant="outline" onClick={() => router.back()}>
-          Batal
+          Cancel
         </Button>
         <Button type="submit" disabled={isPending || !soId}>
-          {isPending ? "Menyimpan..." : "Buat Invoice"}
+          {isPending ? "Saving..." : "Create Invoice"}
         </Button>
       </div>
     </form>

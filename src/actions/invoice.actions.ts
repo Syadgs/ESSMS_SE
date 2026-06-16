@@ -9,21 +9,25 @@ import { hasPermission } from "@/lib/permissions"
 import { validateStatusTransition } from "@/lib/status-transitions"
 import { Role } from "@prisma/client"
 import type { ActionResult } from "@/types"
+import { markOverdueInvoices } from "@/lib/mark-overdue-invoices"
 
 const CreateInvoiceSchema = z.object({
-  soId: z.string().min(1, "Sales Order wajib dipilih"),
-  dueDate: z.string().min(1, "Tanggal jatuh tempo wajib diisi"),
+  soId: z.string().min(1, "Sales Order must be selected"),
+  dueDate: z.string().min(1, "Due date is required"),
   notes: z.string().optional(),
 })
 
-export async function getInvoices() {
+export async function getInvoices(status?: string) {
+  await markOverdueInvoices()
   return prisma.invoice.findMany({
+    where: status ? { status: status as never } : undefined,
     include: { customer: true, salesOrder: true, createdBy: true },
     orderBy: { createdAt: "desc" },
   })
 }
 
 export async function getInvoiceById(id: string) {
+  await markOverdueInvoices()
   return prisma.invoice.findUnique({
     where: { id },
     include: {
@@ -50,7 +54,7 @@ export async function createInvoice(
     const session = await auth()
     if (!session?.user?.id) return { success: false, error: "Unauthorized" }
     if (!hasPermission(session.user.role as Role, "invoices", "create")) {
-      return { success: false, error: "Anda tidak memiliki izin" }
+      return { success: false, error: "You do not have permission" }
     }
 
     const validated = CreateInvoiceSchema.safeParse(formData)
@@ -59,12 +63,14 @@ export async function createInvoice(
     }
 
     const so = await prisma.salesOrder.findUnique({ where: { id: validated.data.soId } })
-    if (!so) return { success: false, error: "Sales Order tidak ditemukan" }
+    if (!so) return { success: false, error: "Sales Order not found" }
     if (so.status !== "SHIPPED") {
-      return { success: false, error: "Hanya SO berstatus SHIPPED yang dapat diinvoice" }
+      return { success: false, error: "Only SHIPPED sales orders can be invoiced" }
     }
 
     const invoiceNumber = await generateDocNumber("INV")
+    const userId = session.user.id
+    if (!userId) return { success: false, error: "Unauthorized" }
 
     const invoice = await prisma.$transaction(async (tx) => {
       const created = await tx.invoice.create({
@@ -72,10 +78,12 @@ export async function createInvoice(
           invoiceNumber,
           soId: so.id,
           customerId: so.customerId,
-          dueDate: new Date(validated.data.dueDate),
+          dueDate: validated.data.dueDate
+            ? new Date(validated.data.dueDate)
+            : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // Default +30 days
           totalAmount: so.totalAmount,
           notes: validated.data.notes,
-          createdById: session.user!.id,
+          createdById: userId,
         },
       })
 
@@ -89,10 +97,10 @@ export async function createInvoice(
 
     revalidatePath("/invoices")
     revalidatePath(`/sales-orders/${so.id}`)
-    return { success: true, data: { id: invoice.id }, message: `Invoice ${invoiceNumber} berhasil dibuat` }
+    return { success: true, data: { id: invoice.id }, message: `Invoice ${invoiceNumber} created successfully` }
   } catch (error) {
     console.error("createInvoice error:", error)
-    return { success: false, error: "Terjadi kesalahan sistem" }
+    return { success: false, error: "A system error occurred" }
   }
 }
 
@@ -101,11 +109,11 @@ export async function sendInvoice(invoiceId: string): Promise<ActionResult> {
     const session = await auth()
     if (!session?.user) return { success: false, error: "Unauthorized" }
     if (!hasPermission(session.user.role as Role, "invoices", "create")) {
-      return { success: false, error: "Anda tidak memiliki izin" }
+      return { success: false, error: "You do not have permission" }
     }
 
     const invoice = await prisma.invoice.findUnique({ where: { id: invoiceId } })
-    if (!invoice) return { success: false, error: "Invoice tidak ditemukan" }
+    if (!invoice) return { success: false, error: "Invoice not found" }
 
     const transition = validateStatusTransition("INVOICE", invoice.status, "SENT")
     if (!transition.valid) return { success: false, error: transition.error! }
@@ -117,8 +125,8 @@ export async function sendInvoice(invoiceId: string): Promise<ActionResult> {
 
     revalidatePath(`/invoices/${invoiceId}`)
     revalidatePath("/invoices")
-    return { success: true, data: undefined, message: "Invoice berhasil dikirim" }
+    return { success: true, data: undefined, message: "Invoice sent successfully" }
   } catch (error) {
-    return { success: false, error: "Terjadi kesalahan sistem" }
+    return { success: false, error: "A system error occurred" }
   }
 }

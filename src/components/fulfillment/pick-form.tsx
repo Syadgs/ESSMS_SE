@@ -47,7 +47,7 @@ export function PickForm({ salesOrders, warehouses }: PickFormProps) {
         <Label>Sales Order *</Label>
         <Select value={soId} onValueChange={setSoId} required>
           <SelectTrigger>
-            <SelectValue placeholder="Pilih SO" />
+            <SelectValue placeholder="Select SO" />
           </SelectTrigger>
           <SelectContent>
             {salesOrders.map((so) => (
@@ -59,10 +59,10 @@ export function PickForm({ salesOrders, warehouses }: PickFormProps) {
         </Select>
       </div>
       <div className="space-y-2">
-        <Label>Gudang *</Label>
+        <Label>Warehouses *</Label>
         <Select value={warehouseId} onValueChange={setWarehouseId} required>
           <SelectTrigger>
-            <SelectValue placeholder="Pilih gudang" />
+            <SelectValue placeholder="Select warehouse" />
           </SelectTrigger>
           <SelectContent>
             {warehouses.map((w) => (
@@ -74,11 +74,11 @@ export function PickForm({ salesOrders, warehouses }: PickFormProps) {
         </Select>
       </div>
       <div className="space-y-2">
-        <Label>Catatan</Label>
+        <Label>Notes</Label>
         <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} />
       </div>
       <Button type="submit" disabled={isPending || !soId || !warehouseId}>
-        {isPending ? "Membuat..." : "Buat Pick Order"}
+        {isPending ? "Creating..." : "Create Pick Order"}
       </Button>
     </form>
   )

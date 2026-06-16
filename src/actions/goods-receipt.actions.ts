@@ -18,10 +18,10 @@ const GRItemSchema = z.object({
 })
 
 const CreateGRSchema = z.object({
-  poId: z.string().min(1, "PO wajib dipilih"),
-  warehouseId: z.string().min(1, "Gudang wajib dipilih"),
+  poId: z.string().min(1, "PO must be selected"),
+  warehouseId: z.string().min(1, "Warehouses must be selected"),
   notes: z.string().optional(),
-  items: z.array(GRItemSchema).min(1, "Minimal 1 item"),
+  items: z.array(GRItemSchema).min(1, "At least 1 item"),
 })
 
 export async function getPOsForReceipt() {
@@ -65,7 +65,7 @@ export async function createGoodsReceipt(
     const session = await auth()
     if (!session?.user?.id) return { success: false, error: "Unauthorized" }
     if (!hasPermission(session.user.role as Role, "goods_receipts", "create")) {
-      return { success: false, error: "Anda tidak memiliki izin" }
+      return { success: false, error: "You do not have permission" }
     }
 
     const validated = CreateGRSchema.safeParse(formData)
@@ -76,13 +76,13 @@ export async function createGoodsReceipt(
     const data = validated.data
     const hasReceived = data.items.some((i) => i.quantityReceived > 0)
     if (!hasReceived) {
-      return { success: false, error: "Minimal 1 item harus memiliki qty diterima > 0" }
+      return { success: false, error: "At least 1 item must have received qty > 0" }
     }
 
     const po = await prisma.purchaseOrder.findUnique({ where: { id: data.poId } })
-    if (!po) return { success: false, error: "Purchase Order tidak ditemukan" }
+    if (!po) return { success: false, error: "Purchase Order not found" }
     if (!["CONFIRMED", "PARTIALLY_RECEIVED"].includes(po.status)) {
-      return { success: false, error: "PO harus berstatus CONFIRMED atau PARTIALLY_RECEIVED" }
+      return { success: false, error: "PO must be CONFIRMED or PARTIALLY_RECEIVED" }
     }
 
     const grNumber = await generateDocNumber("GR")
@@ -108,10 +108,10 @@ export async function createGoodsReceipt(
     })
 
     revalidatePath("/goods-receipts")
-    return { success: true, data: { id: gr.id }, message: `Goods Receipt ${grNumber} berhasil dibuat` }
+    return { success: true, data: { id: gr.id }, message: `Goods Receipt ${grNumber} created successfully` }
   } catch (error) {
     console.error("createGoodsReceipt error:", error)
-    return { success: false, error: "Terjadi kesalahan sistem" }
+    return { success: false, error: "A system error occurred" }
   }
 }
 
@@ -160,14 +160,14 @@ export async function confirmGoodsReceipt(grId: string): Promise<ActionResult> {
     const session = await auth()
     if (!session?.user) return { success: false, error: "Unauthorized" }
     if (!hasPermission(session.user.role as Role, "goods_receipts", "confirm")) {
-      return { success: false, error: "Anda tidak memiliki izin" }
+      return { success: false, error: "You do not have permission" }
     }
 
     const gr = await prisma.goodsReceipt.findUnique({
       where: { id: grId },
       include: { items: true },
     })
-    if (!gr) return { success: false, error: "Goods Receipt tidak ditemukan" }
+    if (!gr) return { success: false, error: "Goods Receipt not found" }
 
     const transition = validateStatusTransition("GR", gr.status, "CONFIRMED")
     if (!transition.valid) return { success: false, error: transition.error! }
@@ -200,9 +200,9 @@ export async function confirmGoodsReceipt(grId: string): Promise<ActionResult> {
     revalidatePath(`/goods-receipts/${grId}`)
     revalidatePath("/goods-receipts")
     revalidatePath(`/purchase-orders/${gr.poId}`)
-    return { success: true, data: undefined, message: "Goods Receipt berhasil dikonfirmasi & stok diperbarui" }
+    return { success: true, data: undefined, message: "Goods Receipt confirmed successfully & stok diperbarui" }
   } catch (error) {
     console.error("confirmGoodsReceipt error:", error)
-    return { success: false, error: "Terjadi kesalahan sistem" }
+    return { success: false, error: "A system error occurred" }
   }
 }

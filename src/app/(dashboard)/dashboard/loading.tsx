@@ -3,7 +3,7 @@ import { PageHeader } from "@/components/shared/page-header"
 export default function DashboardLoading() {
   return (
     <div>
-      <PageHeader title="Dashboard" description="Ringkasan operasional supply chain hari ini" />
+      <PageHeader title="Dashboard" description="Today's supply chain operational summary" />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-6">
         {Array.from({ length: 4 }).map((_, i) => (

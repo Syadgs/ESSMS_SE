@@ -30,26 +30,26 @@ export function RecentActivity({ activities }: RecentActivityProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg font-serif">Aktivitas Terbaru</CardTitle>
+        <CardTitle className="text-lg font-serif">Recent Activity</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="rounded-md border">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Tipe</TableHead>
+                <TableHead>Type</TableHead>
                 <TableHead>Nomor</TableHead>
-                <TableHead>Pihak</TableHead>
-                <TableHead className="text-right">Nilai</TableHead>
+                <TableHead>Party</TableHead>
+                <TableHead className="text-right">Amount</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead>Tanggal</TableHead>
+                <TableHead>Date</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {activities.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} className="h-24 text-center text-muted-foreground">
-                    Belum ada aktivitas
+                    No recent activity
                   </TableCell>
                 </TableRow>
               ) : (

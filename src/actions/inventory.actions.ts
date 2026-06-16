@@ -11,18 +11,18 @@ import { Role } from "@prisma/client"
 import type { ActionResult } from "@/types"
 
 const AdjustmentSchema = z.object({
-  itemId: z.string().min(1, "Item wajib dipilih"),
-  warehouseId: z.string().min(1, "Gudang wajib dipilih"),
+  itemId: z.string().min(1, "Item must be selected"),
+  warehouseId: z.string().min(1, "Warehouses must be selected"),
   adjustmentType: z.enum(["INCREASE", "DECREASE"]),
-  quantity: z.number().int().min(1, "Jumlah minimal 1"),
+  quantity: z.number().int().min(1, "Jumlah at least 1"),
   reason: z.string().optional(),
 })
 
 const TransferSchema = z.object({
-  itemId: z.string().min(1, "Item wajib dipilih"),
-  fromWarehouseId: z.string().min(1, "Gudang asal wajib dipilih"),
-  toWarehouseId: z.string().min(1, "Gudang tujuan wajib dipilih"),
-  quantity: z.number().int().min(1, "Jumlah minimal 1"),
+  itemId: z.string().min(1, "Item must be selected"),
+  fromWarehouseId: z.string().min(1, "Warehouses asal must be selected"),
+  toWarehouseId: z.string().min(1, "Warehouses tujuan must be selected"),
+  quantity: z.number().int().min(1, "Jumlah at least 1"),
   notes: z.string().optional(),
 })
 
@@ -78,7 +78,7 @@ export async function createAdjustment(
     const session = await auth()
     if (!session?.user?.id) return { success: false, error: "Unauthorized" }
     if (!hasPermission(session.user.role as Role, "inventory_adjustment", "create")) {
-      return { success: false, error: "Anda tidak memiliki izin untuk tindakan ini" }
+      return { success: false, error: "You do not have permission for this action" }
     }
 
     const validated = AdjustmentSchema.safeParse(formData)
@@ -96,7 +96,7 @@ export async function createAdjustment(
       if (adjustmentType === "DECREASE") {
         const currentQty = stock?.quantity ?? 0
         if (currentQty < quantity) {
-          throw new Error("Stok tidak mencukupi untuk pengurangan")
+          throw new Error("Insufficient stock for decrease")
         }
       }
 
@@ -126,10 +126,10 @@ export async function createAdjustment(
     })
 
     revalidatePath("/inventory/adjustments")
-    return { success: true, data: { id: adjustment.id }, message: "Penyesuaian stok berhasil dibuat" }
+    return { success: true, data: { id: adjustment.id }, message: "Adjustment stok created successfully" }
   } catch (error) {
     console.error("createAdjustment error:", error)
-    const message = error instanceof Error ? error.message : "Terjadi kesalahan sistem"
+    const message = error instanceof Error ? error.message : "A system error occurred"
     return { success: false, error: message }
   }
 }
@@ -165,7 +165,7 @@ export async function createTransfer(
     const session = await auth()
     if (!session?.user?.id) return { success: false, error: "Unauthorized" }
     if (!hasPermission(session.user.role as Role, "inventory_transfer", "create")) {
-      return { success: false, error: "Anda tidak memiliki izin untuk tindakan ini" }
+      return { success: false, error: "You do not have permission for this action" }
     }
 
     const validated = TransferSchema.safeParse(formData)
@@ -175,7 +175,7 @@ export async function createTransfer(
 
     const { fromWarehouseId, toWarehouseId } = validated.data
     if (fromWarehouseId === toWarehouseId) {
-      return { success: false, error: "Gudang asal dan tujuan tidak boleh sama" }
+      return { success: false, error: "Source and destination warehouses cannot be the same" }
     }
 
     const transferNumber = await generateDocNumber("TRF")
@@ -191,10 +191,10 @@ export async function createTransfer(
     })
 
     revalidatePath("/inventory/transfers")
-    return { success: true, data: { id: transfer.id }, message: "Transfer stok berhasil dibuat" }
+    return { success: true, data: { id: transfer.id }, message: "Transfer stok created successfully" }
   } catch (error) {
     console.error("createTransfer error:", error)
-    return { success: false, error: "Terjadi kesalahan sistem" }
+    return { success: false, error: "A system error occurred" }
   }
 }
 
@@ -203,11 +203,11 @@ export async function completeTransfer(id: string): Promise<ActionResult> {
     const session = await auth()
     if (!session?.user) return { success: false, error: "Unauthorized" }
     if (!hasPermission(session.user.role as Role, "inventory_transfer", "confirm")) {
-      return { success: false, error: "Anda tidak memiliki izin untuk tindakan ini" }
+      return { success: false, error: "You do not have permission for this action" }
     }
 
     const transfer = await prisma.inventoryTransfer.findUnique({ where: { id } })
-    if (!transfer) return { success: false, error: "Transfer tidak ditemukan" }
+    if (!transfer) return { success: false, error: "Transfer not found" }
 
     const transition = validateStatusTransition("TRANSFER", transfer.status, "COMPLETED")
     if (!transition.valid) return { success: false, error: transition.error! }
@@ -223,7 +223,7 @@ export async function completeTransfer(id: string): Promise<ActionResult> {
       })
 
       if (!fromStock || fromStock.quantity < transfer.quantity) {
-        throw new Error("Stok di gudang asal tidak mencukupi")
+        throw new Error("Insufficient stock in source warehouse")
       }
 
       await tx.inventoryStock.update({
@@ -263,10 +263,10 @@ export async function completeTransfer(id: string): Promise<ActionResult> {
 
     revalidatePath("/inventory/transfers")
     revalidatePath(`/inventory/transfers/${id}`)
-    return { success: true, data: undefined, message: "Transfer berhasil diselesaikan" }
+    return { success: true, data: undefined, message: "Transfer completed successfully" }
   } catch (error) {
     console.error("completeTransfer error:", error)
-    const message = error instanceof Error ? error.message : "Terjadi kesalahan sistem"
+    const message = error instanceof Error ? error.message : "A system error occurred"
     return { success: false, error: message }
   }
 }
@@ -280,13 +280,13 @@ export async function cancelTransfer(id: string): Promise<ActionResult> {
     const session = await auth()
     if (!session?.user) return { success: false, error: "Unauthorized" }
     if (!hasPermission(session.user.role as Role, "inventory_transfer", "confirm")) {
-      return { success: false, error: "Anda tidak memiliki izin untuk tindakan ini" }
+      return { success: false, error: "You do not have permission for this action" }
     }
 
     const transfer = await prisma.inventoryTransfer.findUnique({ where: { id } })
-    if (!transfer) return { success: false, error: "Transfer tidak ditemukan" }
+    if (!transfer) return { success: false, error: "Transfer not found" }
     if (transfer.status !== "DRAFT") {
-      return { success: false, error: "Transfer sudah diproses" }
+      return { success: false, error: "Transfer already processed" }
     }
 
     await prisma.inventoryTransfer.update({
@@ -296,9 +296,9 @@ export async function cancelTransfer(id: string): Promise<ActionResult> {
 
     revalidatePath("/inventory/transfers")
     revalidatePath(`/inventory/transfers/${id}`)
-    return { success: true, data: undefined, message: "Transfer berhasil dibatalkan" }
+    return { success: true, data: undefined, message: "Transfer cancelled successfully" }
   } catch (error) {
     console.error("cancelTransfer error:", error)
-    return { success: false, error: "Terjadi kesalahan sistem" }
+    return { success: false, error: "A system error occurred" }
   }
 }

@@ -24,10 +24,10 @@ export default async function NewInvoicePage() {
       <Breadcrumb
         items={[
           { label: "Invoices", href: "/invoices" },
-          { label: "Buat Baru" },
+          { label: "Create New" },
         ]}
       />
-      <PageHeader title="Buat Invoice" description="Buat tagihan dari sales order yang sudah dikirim" />
+      <PageHeader title="Create Invoice" description="Create bill from shipped sales orders" />
       <Card>
         <CardContent className="pt-6">
           <InvoiceForm

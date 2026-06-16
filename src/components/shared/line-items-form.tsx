@@ -69,7 +69,7 @@ export function LineItemsForm({
                       onValueChange={(v) => onUpdate(index, "itemId", v)}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Pilih item" />
+                        <SelectValue placeholder="Select item" />
                       </SelectTrigger>
                       <SelectContent>
                         {itemOptions.map((opt) => (
@@ -128,7 +128,7 @@ export function LineItemsForm({
 
       <Button type="button" variant="outline" size="sm" onClick={onAdd}>
         <Plus className="h-4 w-4 mr-1" />
-        Tambah Item
+        Add Item
       </Button>
 
       <div className="flex justify-end">

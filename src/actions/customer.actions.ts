@@ -9,10 +9,10 @@ import { Role } from "@prisma/client"
 import type { ActionResult } from "@/types"
 
 const CustomerSchema = z.object({
-  customerCode: z.string().min(1, "Kode pelanggan wajib diisi"),
-  customerName: z.string().min(1, "Nama pelanggan wajib diisi"),
+  customerCode: z.string().min(1, "Code customer is required"),
+  customerName: z.string().min(1, "Nama customer is required"),
   contactPerson: z.string().optional(),
-  email: z.string().email("Email tidak valid").optional().or(z.literal("")),
+  email: z.string().email("Invalid email").optional().or(z.literal("")),
   phone: z.string().optional(),
   address: z.string().optional(),
   creditLimit: z.number().min(0),
@@ -42,7 +42,7 @@ export async function createCustomer(
     const session = await auth()
     if (!session?.user) return { success: false, error: "Unauthorized" }
     if (!hasPermission(session.user.role as Role, "customers", "create")) {
-      return { success: false, error: "Anda tidak memiliki izin untuk tindakan ini" }
+      return { success: false, error: "You do not have permission for this action" }
     }
 
     const validated = CustomerSchema.safeParse(formData)
@@ -53,7 +53,7 @@ export async function createCustomer(
     const existing = await prisma.customer.findUnique({
       where: { customerCode: validated.data.customerCode },
     })
-    if (existing) return { success: false, error: "Kode pelanggan sudah digunakan" }
+    if (existing) return { success: false, error: "Code customer is already in use" }
 
     const data = {
       ...validated.data,
@@ -62,10 +62,10 @@ export async function createCustomer(
 
     const customer = await prisma.customer.create({ data })
     revalidatePath("/customers")
-    return { success: true, data: { id: customer.id }, message: "Pelanggan berhasil dibuat" }
+    return { success: true, data: { id: customer.id }, message: "Customers created successfully" }
   } catch (error) {
     console.error("createCustomer error:", error)
-    return { success: false, error: "Terjadi kesalahan sistem" }
+    return { success: false, error: "A system error occurred" }
   }
 }
 
@@ -77,7 +77,7 @@ export async function updateCustomer(
     const session = await auth()
     if (!session?.user) return { success: false, error: "Unauthorized" }
     if (!hasPermission(session.user.role as Role, "customers", "edit")) {
-      return { success: false, error: "Anda tidak memiliki izin untuk tindakan ini" }
+      return { success: false, error: "You do not have permission for this action" }
     }
 
     const validated = CustomerSchema.safeParse(formData)
@@ -93,10 +93,10 @@ export async function updateCustomer(
     await prisma.customer.update({ where: { id }, data })
     revalidatePath("/customers")
     revalidatePath(`/customers/${id}`)
-    return { success: true, data: undefined, message: "Pelanggan berhasil diperbarui" }
+    return { success: true, data: undefined, message: "Customers updated successfully" }
   } catch (error) {
     console.error("updateCustomer error:", error)
-    return { success: false, error: "Terjadi kesalahan sistem" }
+    return { success: false, error: "A system error occurred" }
   }
 }
 
@@ -105,14 +105,14 @@ export async function deleteCustomer(id: string): Promise<ActionResult> {
     const session = await auth()
     if (!session?.user) return { success: false, error: "Unauthorized" }
     if (!hasPermission(session.user.role as Role, "customers", "edit")) {
-      return { success: false, error: "Anda tidak memiliki izin untuk tindakan ini" }
+      return { success: false, error: "You do not have permission for this action" }
     }
 
     await prisma.customer.update({ where: { id }, data: { isActive: false } })
     revalidatePath("/customers")
-    return { success: true, data: undefined, message: "Pelanggan berhasil dinonaktifkan" }
+    return { success: true, data: undefined, message: "Customer deactivated successfully" }
   } catch (error) {
     console.error("deleteCustomer error:", error)
-    return { success: false, error: "Terjadi kesalahan sistem" }
+    return { success: false, error: "A system error occurred" }
   }
 }

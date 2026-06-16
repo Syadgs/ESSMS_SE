@@ -26,17 +26,17 @@ export default async function AdjustmentsPage() {
       <Breadcrumb
         items={[
           { label: "Inventori" },
-          { label: "Penyesuaian Stok" },
+          { label: "Stock Adjustments" },
         ]}
       />
       <PageHeader
-        title="Penyesuaian Stok"
-        description="Riwayat penambahan dan pengurangan stok inventori"
+        title="Stock Adjustments"
+        description="Inventory stock increase and decrease history"
       >
         <Button asChild>
           <Link href="/inventory/adjustments/new">
             <Plus className="h-4 w-4" />
-            Penyesuaian Baru
+            Adjustment Baru
           </Link>
         </Button>
       </PageHeader>

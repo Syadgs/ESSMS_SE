@@ -22,10 +22,10 @@ export default async function NewVendorBillPage() {
       <Breadcrumb
         items={[
           { label: "Vendor Bills", href: "/vendor-bills" },
-          { label: "Buat Baru" },
+          { label: "Create New" },
         ]}
       />
-      <PageHeader title="Buat Vendor Bill" description="Buat tagihan dari purchase order" />
+      <PageHeader title="Create Vendor Bill" description="Create bill from purchase order" />
       <Card>
         <CardContent className="pt-6">
           <VendorBillForm
@@ -36,6 +36,13 @@ export default async function NewVendorBillPage() {
                 value: gr.id,
                 label: gr.grNumber,
               })),
+              items: po.items.map(item => ({
+                itemId: item.itemId || undefined,
+                poItemId: item.id,
+                quantity: Number(item.quantity),
+                unitPrice: Number(item.unitPrice),
+                description: item.item.itemName
+              }))
             }))}
           />
         </CardContent>

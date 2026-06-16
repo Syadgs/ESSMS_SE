@@ -23,10 +23,10 @@ export default async function NewCustomerPaymentPage() {
       <Breadcrumb
         items={[
           { label: "Customer Payments", href: "/customer-payments" },
-          { label: "Catat Baru" },
+          { label: "New Entry" },
         ]}
       />
-      <PageHeader title="Catat Pembayaran Customer" description="Terima pembayaran invoice customer" />
+      <PageHeader title="Record Payment Customer" description="Receive customer invoice payment" />
       <Card>
         <CardContent className="pt-6">
           <CustomerPaymentForm

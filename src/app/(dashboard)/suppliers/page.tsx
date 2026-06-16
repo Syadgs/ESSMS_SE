@@ -23,12 +23,12 @@ export default async function SuppliersPage() {
       <Breadcrumb items={[{ label: "Supplier" }]} />
       <PageHeader
         title="Supplier"
-        description="Kelola data supplier dan vendor"
+        description="Manage suppliers and vendors"
       >
         <Button asChild>
           <Link href="/suppliers/new">
             <Plus className="h-4 w-4" />
-            Supplier Baru
+            New Supplier
           </Link>
         </Button>
       </PageHeader>

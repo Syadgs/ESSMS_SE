@@ -17,6 +17,7 @@ export type LowStockItem = {
   itemName: string
   warehouseName: string
   quantity: number
+  reorderPoint?: number
 }
 
 interface LowStockAlertProps {
@@ -25,10 +26,10 @@ interface LowStockAlertProps {
 
 export function LowStockAlert({ items }: LowStockAlertProps) {
   return (
-    <Card>
+    <Card className="rounded-xl overflow-hidden h-full">
       <CardHeader className="flex flex-row items-center gap-2">
         <AlertTriangle className="h-5 w-5 text-amber-500" />
-        <CardTitle className="text-lg font-serif">Peringatan Stok Rendah</CardTitle>
+        <CardTitle className="text-lg font-serif">Low Stock Alert</CardTitle>
         {items.length > 0 && (
           <Badge variant="outline" className="ml-auto border-amber-300 text-amber-700">
             {items.length} item
@@ -37,16 +38,17 @@ export function LowStockAlert({ items }: LowStockAlertProps) {
       </CardHeader>
       <CardContent>
         {items.length === 0 ? (
-          <p className="text-sm text-muted-foreground">Semua stok dalam kondisi aman.</p>
+          <p className="text-sm text-muted-foreground">All stock levels are healthy.</p>
         ) : (
           <div className="rounded-md border">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Kode</TableHead>
+                  <TableHead>Code</TableHead>
                   <TableHead>Item</TableHead>
-                  <TableHead>Gudang</TableHead>
+                  <TableHead>Warehouse</TableHead>
                   <TableHead className="text-right">Qty</TableHead>
+                  <TableHead className="text-right">Reorder</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -61,6 +63,9 @@ export function LowStockAlert({ items }: LowStockAlertProps) {
                     <TableCell className="text-muted-foreground">{item.warehouseName}</TableCell>
                     <TableCell className="text-right">
                       <span className="font-semibold text-red-600">{item.quantity}</span>
+                    </TableCell>
+                    <TableCell className="text-right text-muted-foreground">
+                      {item.reorderPoint ?? 10}
                     </TableCell>
                   </TableRow>
                 ))}

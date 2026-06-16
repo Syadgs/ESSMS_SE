@@ -20,13 +20,13 @@ export default async function NewTransferPage() {
     <>
       <Breadcrumb
         items={[
-          { label: "Transfer Stok", href: "/inventory/transfers" },
+          { label: "Stock Transfers", href: "/inventory/transfers" },
           { label: "Transfer Baru" },
         ]}
       />
       <PageHeader
-        title="Transfer Stok Baru"
-        description="Pindahkan stok item dari satu gudang ke gudang lain"
+        title="Stock Transfers Baru"
+        description="Transfer stock from one warehouse to another"
       />
       <TransferForm itemOptions={itemOptions} warehouseOptions={warehouseOptions} />
     </>

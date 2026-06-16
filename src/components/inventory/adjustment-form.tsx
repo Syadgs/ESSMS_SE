@@ -22,10 +22,10 @@ import type { SelectOption } from "@/types"
 import type { AdjustmentType } from "@prisma/client"
 
 const adjustmentFormSchema = z.object({
-  itemId: z.string().min(1, "Item wajib dipilih"),
-  warehouseId: z.string().min(1, "Gudang wajib dipilih"),
+  itemId: z.string().min(1, "Item must be selected"),
+  warehouseId: z.string().min(1, "Warehouses must be selected"),
   adjustmentType: z.enum(["INCREASE", "DECREASE"]),
-  quantity: z.coerce.number().int().min(1, "Jumlah minimal 1"),
+  quantity: z.coerce.number().int().min(1, "Jumlah at least 1"),
   reason: z.string().optional(),
 })
 
@@ -89,7 +89,7 @@ export function AdjustmentForm({ itemOptions, warehouseOptions }: AdjustmentForm
               <Label>Item</Label>
               <Select value={itemId} onValueChange={(v) => setValue("itemId", v)}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Pilih item" />
+                  <SelectValue placeholder="Select item" />
                 </SelectTrigger>
                 <SelectContent>
                   {itemOptions.map((opt) => (
@@ -105,10 +105,10 @@ export function AdjustmentForm({ itemOptions, warehouseOptions }: AdjustmentForm
             </div>
 
             <div className="space-y-2">
-              <Label>Gudang</Label>
+              <Label>Warehouses</Label>
               <Select value={warehouseId} onValueChange={(v) => setValue("warehouseId", v)}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Pilih gudang" />
+                  <SelectValue placeholder="Select warehouse" />
                 </SelectTrigger>
                 <SelectContent>
                   {warehouseOptions.map((opt) => (
@@ -124,13 +124,13 @@ export function AdjustmentForm({ itemOptions, warehouseOptions }: AdjustmentForm
             </div>
 
             <div className="space-y-2">
-              <Label>Tipe Penyesuaian</Label>
+              <Label>Type Adjustment</Label>
               <Select
                 value={adjustmentType}
                 onValueChange={(v) => setValue("adjustmentType", v as AdjustmentType)}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Pilih tipe" />
+                  <SelectValue placeholder="Select type" />
                 </SelectTrigger>
                 <SelectContent>
                   {(Object.keys(ADJUSTMENT_TYPE_LABELS) as AdjustmentType[]).map((type) => (
@@ -151,17 +151,17 @@ export function AdjustmentForm({ itemOptions, warehouseOptions }: AdjustmentForm
             </div>
 
             <div className="space-y-2 md:col-span-2">
-              <Label htmlFor="reason">Alasan</Label>
-              <Textarea id="reason" {...register("reason")} rows={3} placeholder="Alasan penyesuaian (opsional)" />
+              <Label htmlFor="reason">Reason</Label>
+              <Textarea id="reason" {...register("reason")} rows={3} placeholder="Reason adjustment (opsional)" />
             </div>
           </div>
         </CardContent>
         <CardFooter className="flex justify-end gap-2 border-t pt-6">
           <Button type="button" variant="outline" onClick={() => router.back()}>
-            Batal
+            Cancel
           </Button>
           <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Menyimpan..." : "Simpan Penyesuaian"}
+            {isSubmitting ? "Saving..." : "Save Adjustment"}
           </Button>
         </CardFooter>
       </Card>

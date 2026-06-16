@@ -7,13 +7,13 @@ export default function NewCustomerPage() {
     <>
       <Breadcrumb
         items={[
-          { label: "Pelanggan", href: "/customers" },
-          { label: "Pelanggan Baru" },
+          { label: "Customers", href: "/customers" },
+          { label: "Customers Baru" },
         ]}
       />
       <PageHeader
-        title="Pelanggan Baru"
-        description="Tambahkan pelanggan baru ke master data"
+        title="Customers Baru"
+        description="Add customer to master data"
       />
       <CustomerForm />
     </>

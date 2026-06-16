@@ -20,7 +20,7 @@ export default async function CustomerDetailPage({ params }: CustomerDetailPageP
     <>
       <Breadcrumb
         items={[
-          { label: "Pelanggan", href: "/customers" },
+          { label: "Customers", href: "/customers" },
           { label: customer.customerName },
         ]}
       />
@@ -29,12 +29,12 @@ export default async function CustomerDetailPage({ params }: CustomerDetailPageP
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Card className="lg:col-span-2">
           <CardHeader>
-            <CardTitle>Informasi Pelanggan</CardTitle>
+            <CardTitle>Information Customers</CardTitle>
           </CardHeader>
           <CardContent>
             <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
               <div>
-                <dt className="text-muted-foreground">Kode Pelanggan</dt>
+                <dt className="text-muted-foreground">Code Customers</dt>
                 <dd className="mt-1">
                   <span className="doc-number">{customer.customerCode}</span>
                 </dd>
@@ -46,7 +46,7 @@ export default async function CustomerDetailPage({ params }: CustomerDetailPageP
                 </dd>
               </div>
               <div>
-                <dt className="text-muted-foreground">Kontak Person</dt>
+                <dt className="text-muted-foreground">Contact Person</dt>
                 <dd className="mt-1 font-medium">{customer.contactPerson ?? "-"}</dd>
               </div>
               <div>
@@ -68,7 +68,7 @@ export default async function CustomerDetailPage({ params }: CustomerDetailPageP
                 <dd className="mt-1 font-medium">{customer.address ?? "-"}</dd>
               </div>
               <div>
-                <dt className="text-muted-foreground">Dibuat</dt>
+                <dt className="text-muted-foreground">Created</dt>
                 <dd className="mt-1 font-medium">{formatDate(customer.createdAt)}</dd>
               </div>
               <div>
@@ -86,7 +86,7 @@ export default async function CustomerDetailPage({ params }: CustomerDetailPageP
             </CardHeader>
             <CardContent>
               {customer.salesOrders.length === 0 ? (
-                <p className="text-sm text-muted-foreground">Belum ada sales order</p>
+                <p className="text-sm text-muted-foreground">No sales order</p>
               ) : (
                 <ul className="space-y-3">
                   {customer.salesOrders.map((so) => (
@@ -109,7 +109,7 @@ export default async function CustomerDetailPage({ params }: CustomerDetailPageP
             </CardHeader>
             <CardContent>
               {customer.invoices.length === 0 ? (
-                <p className="text-sm text-muted-foreground">Belum ada invoice</p>
+                <p className="text-sm text-muted-foreground">No invoice</p>
               ) : (
                 <ul className="space-y-3">
                   {customer.invoices.map((inv) => (

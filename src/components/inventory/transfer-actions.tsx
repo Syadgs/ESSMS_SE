@@ -43,10 +43,10 @@ export function TransferActions({ transferId }: TransferActionsProps) {
   return (
     <div className="flex gap-2">
       <Button onClick={handleComplete} disabled={loading !== null}>
-        {loading === "complete" ? "Memproses..." : "Selesaikan Transfer"}
+        {loading === "complete" ? "Processing..." : "Completedkan Transfer"}
       </Button>
       <Button variant="outline" onClick={handleCancel} disabled={loading !== null}>
-        {loading === "cancel" ? "Memproses..." : "Batalkan"}
+        {loading === "cancel" ? "Processing..." : "Cancelkan"}
       </Button>
     </div>
   )

@@ -31,12 +31,12 @@ const columns: ColumnDef<InvoiceRow>[] = [
   { accessorKey: "customerName", header: "Customer" },
   {
     accessorKey: "invoiceDate",
-    header: "Tanggal",
+    header: "Date",
     cell: ({ row }) => formatDate(row.original.invoiceDate),
   },
   {
     accessorKey: "dueDate",
-    header: "Jatuh Tempo",
+    header: "Overdue",
     cell: ({ row }) => formatDate(row.original.dueDate),
   },
   {
@@ -59,9 +59,9 @@ export function InvoicesTable({ data }: { data: InvoiceRow[] }) {
       columns={columns}
       data={data}
       searchKey="invoiceNumber"
-      searchPlaceholder="Cari nomor invoice..."
-      emptyTitle="Belum ada Invoice"
-      emptyDescription="Buat invoice dari sales order yang sudah dikirim"
+      searchPlaceholder="Search invoice..."
+      emptyTitle="No Invoice"
+      emptyDescription="Create invoice from shipped sales orders"
     />
   )
 }

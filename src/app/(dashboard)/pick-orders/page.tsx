@@ -38,12 +38,12 @@ export default async function PickOrdersPage() {
   return (
     <>
       <Breadcrumb items={[{ label: "Pick Orders" }]} />
-      <PageHeader title="Pick Orders" description="Pengambilan barang dari gudang" />
+      <PageHeader title="Pick Orders" description="Pengambilan barang from warehouse" />
 
       {salesOrders.length > 0 && (
         <Card className="mb-6">
           <CardHeader>
-            <CardTitle className="text-base">Buat Pick Order Baru</CardTitle>
+            <CardTitle className="text-base">Create Pick Order Baru</CardTitle>
           </CardHeader>
           <CardContent>
             <PickForm

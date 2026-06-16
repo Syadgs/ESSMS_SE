@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma"
 import bcrypt from "bcryptjs"
 import { z } from "zod"
 import type { Role } from "@prisma/client"
+import type { JWT } from "next-auth/jwt"
 
 declare module "next-auth" {
   interface User {
@@ -68,8 +69,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
     session({ session, token }) {
       if (session.user) {
-        session.user.role = token.role
-        session.user.id = token.id
+        session.user.role = token.role as Role
+        session.user.id = token.id as string
       }
       return session
     },

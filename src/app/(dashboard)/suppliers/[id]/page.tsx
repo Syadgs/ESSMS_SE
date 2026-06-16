@@ -29,12 +29,12 @@ export default async function SupplierDetailPage({ params }: SupplierDetailPageP
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Card className="lg:col-span-2">
           <CardHeader>
-            <CardTitle>Informasi Supplier</CardTitle>
+            <CardTitle>Information Supplier</CardTitle>
           </CardHeader>
           <CardContent>
             <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
               <div>
-                <dt className="text-muted-foreground">Kode Supplier</dt>
+                <dt className="text-muted-foreground">Code Supplier</dt>
                 <dd className="mt-1">
                   <span className="doc-number">{supplier.supplierCode}</span>
                 </dd>
@@ -46,7 +46,7 @@ export default async function SupplierDetailPage({ params }: SupplierDetailPageP
                 </dd>
               </div>
               <div>
-                <dt className="text-muted-foreground">Kontak Person</dt>
+                <dt className="text-muted-foreground">Contact Person</dt>
                 <dd className="mt-1 font-medium">{supplier.contactPerson ?? "-"}</dd>
               </div>
               <div>
@@ -62,7 +62,7 @@ export default async function SupplierDetailPage({ params }: SupplierDetailPageP
                 <dd className="mt-1 font-medium">{supplier.address ?? "-"}</dd>
               </div>
               <div>
-                <dt className="text-muted-foreground">Dibuat</dt>
+                <dt className="text-muted-foreground">Created</dt>
                 <dd className="mt-1 font-medium">{formatDate(supplier.createdAt)}</dd>
               </div>
               <div>
@@ -80,7 +80,7 @@ export default async function SupplierDetailPage({ params }: SupplierDetailPageP
             </CardHeader>
             <CardContent>
               {supplier.purchaseOrders.length === 0 ? (
-                <p className="text-sm text-muted-foreground">Belum ada purchase order</p>
+                <p className="text-sm text-muted-foreground">No purchase order</p>
               ) : (
                 <ul className="space-y-3">
                   {supplier.purchaseOrders.map((po) => (
@@ -103,7 +103,7 @@ export default async function SupplierDetailPage({ params }: SupplierDetailPageP
             </CardHeader>
             <CardContent>
               {supplier.vendorBills.length === 0 ? (
-                <p className="text-sm text-muted-foreground">Belum ada vendor bill</p>
+                <p className="text-sm text-muted-foreground">No vendor bill</p>
               ) : (
                 <ul className="space-y-3">
                   {supplier.vendorBills.map((bill) => (

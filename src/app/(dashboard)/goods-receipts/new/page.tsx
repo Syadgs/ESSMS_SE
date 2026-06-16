@@ -26,10 +26,10 @@ export default async function NewGoodsReceiptPage() {
       <Breadcrumb
         items={[
           { label: "Goods Receipt", href: "/goods-receipts" },
-          { label: "Buat Baru" },
+          { label: "Create New" },
         ]}
       />
-      <PageHeader title="Buat Goods Receipt" description="Catat penerimaan barang dari supplier" />
+      <PageHeader title="Create Goods Receipt" description="Record goods receipt from suppliers" />
       <Card>
         <CardContent className="pt-6">
           <GRForm

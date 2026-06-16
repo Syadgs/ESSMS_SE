@@ -13,6 +13,6 @@ export function GRActions({ grId, status, canConfirm }: GRActionsProps) {
   if (status !== "DRAFT" || !canConfirm) return null
 
   return (
-    <ActionButton label="Konfirmasi GR" action={() => confirmGoodsReceipt(grId)} />
+    <ActionButton label="Confirm GR" action={() => confirmGoodsReceipt(grId)} />
   )
 }

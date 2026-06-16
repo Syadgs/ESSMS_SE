@@ -26,7 +26,7 @@ export async function generateDocNumber(prefix: string): Promise<string> {
       throw new Error(`Prefix tidak dikenal: ${prefix}`)
     }
 
-    // Cari nomor terakhir untuk prefix dan tahun ini
+    // Search terakhir untuk prefix dan tahun ini
     let lastNumber: string | null = null
 
     switch (prefix) {

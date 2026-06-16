@@ -28,7 +28,7 @@ export default async function ShipmentsPage() {
   return (
     <>
       <Breadcrumb items={[{ label: "Shipments" }]} />
-      <PageHeader title="Shipments" description="Pengiriman barang ke customer" />
+      <PageHeader title="Shipments" description="Shipments to customers" />
       <ShipmentsTable data={data} />
     </>
   )

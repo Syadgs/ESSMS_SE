@@ -50,7 +50,7 @@ export default async function PackOrderDetailPage({
             <StatusBadge status={pack.status} />
           </div>
           <p className="text-sm text-muted-foreground mt-2">
-            Pack {formatDate(pack.packDate)} oleh {pack.packedBy.name}
+            Pack {formatDate(pack.packDate)} by {pack.packedBy.name}
           </p>
         </div>
         <PackActions
@@ -64,17 +64,17 @@ export default async function PackOrderDetailPage({
       <div className="grid gap-4 md:grid-cols-2 mb-6">
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Informasi Packing</CardTitle>
+            <CardTitle className="text-base">Information Packing</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2 text-sm">
             <p><span className="text-muted-foreground">Customer:</span> {pack.pickOrder.salesOrder.customer.customerName}</p>
-            <p><span className="text-muted-foreground">Gudang:</span> {pack.pickOrder.warehouse.warehouseName}</p>
+            <p><span className="text-muted-foreground">Warehouses:</span> {pack.pickOrder.warehouse.warehouseName}</p>
             <p><span className="text-muted-foreground">Jumlah Paket:</span> {pack.packageCount}</p>
             {pack.totalWeight && (
               <p><span className="text-muted-foreground">Berat Total:</span> {decimalToNumber(pack.totalWeight)} kg</p>
             )}
             {pack.notes && (
-              <p><span className="text-muted-foreground">Catatan:</span> {pack.notes}</p>
+              <p><span className="text-muted-foreground">Notes:</span> {pack.notes}</p>
             )}
           </CardContent>
         </Card>

@@ -22,15 +22,15 @@ export default async function CustomersPage() {
 
   return (
     <>
-      <Breadcrumb items={[{ label: "Pelanggan" }]} />
+      <Breadcrumb items={[{ label: "Customers" }]} />
       <PageHeader
-        title="Pelanggan"
-        description="Kelola data pelanggan dan batas kredit"
+        title="Customers"
+        description="Manage customers and credit limits"
       >
         <Button asChild>
           <Link href="/customers/new">
             <Plus className="h-4 w-4" />
-            Pelanggan Baru
+            Customers Baru
           </Link>
         </Button>
       </PageHeader>

@@ -27,7 +27,7 @@ const columns: ColumnDef<SORow>[] = [
     ),
   },
   { accessorKey: "customerName", header: "Customer" },
-  { accessorKey: "orderDate", header: "Tanggal Order" },
+  { accessorKey: "orderDate", header: "Date Order" },
   {
     accessorKey: "totalAmount",
     header: "Total",
@@ -71,7 +71,7 @@ export default async function SalesReportPage() {
   return (
     <div>
       <PageHeader
-        title="Laporan Penjualan"
+        title="Sales Report"
         description={`${data.length} sales order · Total: ${formatCurrency(totalSales)}`}
       />
       <DataTable
@@ -79,7 +79,7 @@ export default async function SalesReportPage() {
         data={data}
         searchKey="customerName"
         searchPlaceholder="Cari customer..."
-        emptyDescription="Belum ada data sales order"
+        emptyDescription="No sales order data yet"
       />
     </div>
   )

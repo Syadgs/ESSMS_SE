@@ -9,10 +9,10 @@ import { Role } from "@prisma/client"
 import type { ActionResult } from "@/types"
 
 const SupplierSchema = z.object({
-  supplierCode: z.string().min(1, "Kode supplier wajib diisi"),
-  supplierName: z.string().min(1, "Nama supplier wajib diisi"),
+  supplierCode: z.string().min(1, "Code supplier is required"),
+  supplierName: z.string().min(1, "Nama supplier is required"),
   contactPerson: z.string().optional(),
-  email: z.string().email("Email tidak valid").optional().or(z.literal("")),
+  email: z.string().email("Invalid email").optional().or(z.literal("")),
   phone: z.string().optional(),
   address: z.string().optional(),
 })
@@ -41,7 +41,7 @@ export async function createSupplier(
     const session = await auth()
     if (!session?.user) return { success: false, error: "Unauthorized" }
     if (!hasPermission(session.user.role as Role, "suppliers", "create")) {
-      return { success: false, error: "Anda tidak memiliki izin untuk tindakan ini" }
+      return { success: false, error: "You do not have permission for this action" }
     }
 
     const validated = SupplierSchema.safeParse(formData)
@@ -52,7 +52,7 @@ export async function createSupplier(
     const existing = await prisma.supplier.findUnique({
       where: { supplierCode: validated.data.supplierCode },
     })
-    if (existing) return { success: false, error: "Kode supplier sudah digunakan" }
+    if (existing) return { success: false, error: "Code supplier is already in use" }
 
     const data = {
       ...validated.data,
@@ -61,10 +61,10 @@ export async function createSupplier(
 
     const supplier = await prisma.supplier.create({ data })
     revalidatePath("/suppliers")
-    return { success: true, data: { id: supplier.id }, message: "Supplier berhasil dibuat" }
+    return { success: true, data: { id: supplier.id }, message: "Supplier created successfully" }
   } catch (error) {
     console.error("createSupplier error:", error)
-    return { success: false, error: "Terjadi kesalahan sistem" }
+    return { success: false, error: "A system error occurred" }
   }
 }
 
@@ -76,7 +76,7 @@ export async function updateSupplier(
     const session = await auth()
     if (!session?.user) return { success: false, error: "Unauthorized" }
     if (!hasPermission(session.user.role as Role, "suppliers", "edit")) {
-      return { success: false, error: "Anda tidak memiliki izin untuk tindakan ini" }
+      return { success: false, error: "You do not have permission for this action" }
     }
 
     const validated = SupplierSchema.safeParse(formData)
@@ -92,10 +92,10 @@ export async function updateSupplier(
     await prisma.supplier.update({ where: { id }, data })
     revalidatePath("/suppliers")
     revalidatePath(`/suppliers/${id}`)
-    return { success: true, data: undefined, message: "Supplier berhasil diperbarui" }
+    return { success: true, data: undefined, message: "Supplier updated successfully" }
   } catch (error) {
     console.error("updateSupplier error:", error)
-    return { success: false, error: "Terjadi kesalahan sistem" }
+    return { success: false, error: "A system error occurred" }
   }
 }
 
@@ -104,14 +104,14 @@ export async function deleteSupplier(id: string): Promise<ActionResult> {
     const session = await auth()
     if (!session?.user) return { success: false, error: "Unauthorized" }
     if (!hasPermission(session.user.role as Role, "suppliers", "edit")) {
-      return { success: false, error: "Anda tidak memiliki izin untuk tindakan ini" }
+      return { success: false, error: "You do not have permission for this action" }
     }
 
     await prisma.supplier.update({ where: { id }, data: { isActive: false } })
     revalidatePath("/suppliers")
-    return { success: true, data: undefined, message: "Supplier berhasil dinonaktifkan" }
+    return { success: true, data: undefined, message: "Supplier deactivated successfully" }
   } catch (error) {
     console.error("deleteSupplier error:", error)
-    return { success: false, error: "Terjadi kesalahan sistem" }
+    return { success: false, error: "A system error occurred" }
   }
 }

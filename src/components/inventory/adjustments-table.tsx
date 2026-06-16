@@ -25,25 +25,25 @@ const ADJUSTMENT_TYPE_LABELS: Record<AdjustmentType, string> = {
 const columns: ColumnDef<AdjustmentRow>[] = [
   {
     accessorKey: "createdAt",
-    header: "Tanggal",
+    header: "Date",
     cell: ({ row }) => formatDate(row.original.createdAt),
   },
   {
     accessorKey: "itemCode",
-    header: "Kode Item",
+    header: "Code Item",
     cell: ({ row }) => <span className="doc-number">{row.original.itemCode}</span>,
   },
   {
     accessorKey: "itemName",
-    header: "Nama Item",
+    header: "Item Name",
   },
   {
     accessorKey: "warehouseName",
-    header: "Gudang",
+    header: "Warehouses",
   },
   {
     accessorKey: "adjustmentType",
-    header: "Tipe",
+    header: "Type",
     cell: ({ row }) => ADJUSTMENT_TYPE_LABELS[row.original.adjustmentType],
   },
   {
@@ -52,7 +52,7 @@ const columns: ColumnDef<AdjustmentRow>[] = [
   },
   {
     accessorKey: "reason",
-    header: "Alasan",
+    header: "Reason",
     cell: ({ row }) => row.original.reason ?? "-",
   },
   {
@@ -71,9 +71,9 @@ export function AdjustmentsTable({ data }: AdjustmentsTableProps) {
       columns={columns}
       data={data}
       searchKey="itemName"
-      searchPlaceholder="Cari nama item..."
-      emptyTitle="Belum ada penyesuaian stok"
-      emptyDescription="Buat penyesuaian stok baru untuk memulai"
+      searchPlaceholder="Search item..."
+      emptyTitle="No adjustment stok"
+      emptyDescription="Create adjustment stok "
     />
   )
 }

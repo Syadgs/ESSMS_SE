@@ -11,7 +11,7 @@ interface KpiCardProps {
 
 export function KpiCard({ title, value, icon: Icon, description, className }: KpiCardProps) {
   return (
-    <div className={cn("rounded-md border bg-card p-6 shadow-sm", className)}>
+    <div className={cn("rounded-xl border bg-card p-5 sm:p-6 shadow-sm h-full", className)}>
       <div className="flex items-start justify-between">
         <div className="space-y-2">
           <p className="text-sm font-medium text-muted-foreground">{title}</p>

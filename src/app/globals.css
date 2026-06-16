@@ -57,13 +57,26 @@
 @layer components {
   .sidebar {
     background: linear-gradient(180deg, #0f2744 0%, #050f1c 100%);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.12);
   }
 
   .doc-number {
-    @apply font-mono text-sm tracking-wider bg-amber-50 text-amber-700 px-2 py-0.5 rounded-md border border-amber-200;
+    @apply font-mono text-xs sm:text-sm tracking-wider bg-amber-50 text-amber-700 px-2 py-0.5 rounded-md border border-amber-200;
   }
 
   .status-chip {
-    @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold uppercase tracking-wide;
+    @apply inline-flex items-center gap-1.5 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md text-[10px] sm:text-xs font-semibold uppercase tracking-wide whitespace-nowrap;
+  }
+
+  .page-card {
+    @apply rounded-xl border bg-white shadow-sm;
+  }
+
+  .table-scroll {
+    @apply overflow-x-auto -mx-4 sm:mx-0;
+  }
+
+  .table-scroll > div {
+    @apply min-w-[640px] sm:min-w-0;
   }
 }

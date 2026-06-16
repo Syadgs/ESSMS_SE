@@ -19,7 +19,8 @@ export const VALID_TRANSITIONS = {
   BILL: {
     DRAFT: ["PENDING_APPROVAL"],
     PENDING_APPROVAL: ["APPROVED", "REJECTED"],
-    APPROVED: ["PAID"],
+    APPROVED: ["PARTIALLY_PAID", "PAID"],
+    PARTIALLY_PAID: ["PAID"],
   },
   GR: {
     DRAFT: ["CONFIRMED"],
@@ -53,17 +54,17 @@ export function validateStatusTransition(
   currentStatus: string,
   newStatus: string
 ): { valid: boolean; error?: string } {
-  const transitions = VALID_TRANSITIONS[docType] as Record<string, string[]>
+  const transitions = VALID_TRANSITIONS[docType] as unknown as Record<string, readonly string[]>
   const allowed = transitions[currentStatus]
 
   if (!allowed) {
-    return { valid: false, error: `Status ${currentStatus} tidak dapat diubah` }
+    return { valid: false, error: `Status ${currentStatus} cannot be changed` }
   }
 
   if (!allowed.includes(newStatus)) {
     return {
       valid: false,
-      error: `Transisi dari ${currentStatus} ke ${newStatus} tidak diizinkan`,
+      error: `Transisi of ${currentStatus} to ${newStatus} is not allowed`,
     }
   }
 

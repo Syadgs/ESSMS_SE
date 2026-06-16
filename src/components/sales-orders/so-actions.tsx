@@ -25,25 +25,25 @@ export function SOActions({ soId, status, canCreate, canApprove, canProcess }: S
   return (
     <div className="flex gap-2 flex-wrap">
       {status === "DRAFT" && canCreate && (
-        <ActionButton label="Ajukan Persetujuan" action={() => submitSalesOrder(soId)} />
+        <ActionButton label="Submit for Approval" action={() => submitSalesOrder(soId)} />
       )}
       {status === "PENDING_APPROVAL" && canApprove && (
         <>
-          <ActionButton label="Setujui" action={() => approveSalesOrder(soId)} />
+          <ActionButton label="Approve" action={() => approveSalesOrder(soId)} />
           <Button variant="destructive" onClick={() => setShowReject(true)}>
-            Tolak
+            Reject
           </Button>
           <RejectDialog
             open={showReject}
             onOpenChange={setShowReject}
-            title="Tolak Sales Order"
-            description="Berikan alasan penolakan sales order ini."
+            title="Reject Sales Order"
+            description="Provide a reason for rejecting this sales order."
             action={(note) => rejectSalesOrder(soId, note)}
           />
         </>
       )}
       {status === "APPROVED" && canProcess && (
-        <ActionButton label="Mulai Proses" action={() => startSalesOrderProcessing(soId)} />
+        <ActionButton label="Start Processing" action={() => startSalesOrderProcessing(soId)} />
       )}
     </div>
   )

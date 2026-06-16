@@ -28,7 +28,7 @@ const columns: ColumnDef<PORow>[] = [
   { accessorKey: "supplierName", header: "Supplier" },
   {
     accessorKey: "orderDate",
-    header: "Tanggal",
+    header: "Date",
     cell: ({ row }) => formatDate(row.original.orderDate),
   },
   {
@@ -51,9 +51,9 @@ export function POTable({ data }: { data: PORow[] }) {
       columns={columns}
       data={data}
       searchKey="poNumber"
-      searchPlaceholder="Cari nomor PO..."
-      emptyTitle="Belum ada Purchase Order"
-      emptyDescription="Buat purchase order pertama Anda"
+      searchPlaceholder="Search PO..."
+      emptyTitle="No Purchase Order"
+      emptyDescription="Create purchase order yet"
     />
   )
 }

@@ -9,8 +9,8 @@ import { Role } from "@prisma/client"
 import type { ActionResult } from "@/types"
 
 const ItemSchema = z.object({
-  itemCode: z.string().min(1, "Kode item wajib diisi"),
-  itemName: z.string().min(1, "Nama item wajib diisi"),
+  itemCode: z.string().min(1, "Code item is required"),
+  itemName: z.string().min(1, "Nama item is required"),
   itemType: z.enum(["INVENTORY", "NON_INVENTORY", "SERVICE"]),
   description: z.string().optional(),
   unitPrice: z.number().min(0),
@@ -40,7 +40,7 @@ export async function createItem(formData: z.infer<typeof ItemSchema>): Promise<
     const session = await auth()
     if (!session?.user) return { success: false, error: "Unauthorized" }
     if (!hasPermission(session.user.role as Role, "items", "create")) {
-      return { success: false, error: "Anda tidak memiliki izin untuk tindakan ini" }
+      return { success: false, error: "You do not have permission for this action" }
     }
 
     const validated = ItemSchema.safeParse(formData)
@@ -49,14 +49,14 @@ export async function createItem(formData: z.infer<typeof ItemSchema>): Promise<
     }
 
     const existing = await prisma.item.findUnique({ where: { itemCode: validated.data.itemCode } })
-    if (existing) return { success: false, error: "Kode item sudah digunakan" }
+    if (existing) return { success: false, error: "Code item is already in use" }
 
     const item = await prisma.item.create({ data: validated.data })
     revalidatePath("/items")
-    return { success: true, data: { id: item.id }, message: "Item berhasil dibuat" }
+    return { success: true, data: { id: item.id }, message: "Item created successfully" }
   } catch (error) {
     console.error("createItem error:", error)
-    return { success: false, error: "Terjadi kesalahan sistem" }
+    return { success: false, error: "A system error occurred" }
   }
 }
 
@@ -68,7 +68,7 @@ export async function updateItem(
     const session = await auth()
     if (!session?.user) return { success: false, error: "Unauthorized" }
     if (!hasPermission(session.user.role as Role, "items", "edit")) {
-      return { success: false, error: "Anda tidak memiliki izin untuk tindakan ini" }
+      return { success: false, error: "You do not have permission for this action" }
     }
 
     const validated = ItemSchema.safeParse(formData)
@@ -79,10 +79,10 @@ export async function updateItem(
     await prisma.item.update({ where: { id }, data: validated.data })
     revalidatePath("/items")
     revalidatePath(`/items/${id}`)
-    return { success: true, data: undefined, message: "Item berhasil diperbarui" }
+    return { success: true, data: undefined, message: "Item updated successfully" }
   } catch (error) {
     console.error("updateItem error:", error)
-    return { success: false, error: "Terjadi kesalahan sistem" }
+    return { success: false, error: "A system error occurred" }
   }
 }
 
@@ -91,13 +91,13 @@ export async function deleteItem(id: string): Promise<ActionResult> {
     const session = await auth()
     if (!session?.user) return { success: false, error: "Unauthorized" }
     if (!hasPermission(session.user.role as Role, "items", "edit")) {
-      return { success: false, error: "Anda tidak memiliki izin" }
+      return { success: false, error: "You do not have permission" }
     }
 
     await prisma.item.update({ where: { id }, data: { isActive: false } })
     revalidatePath("/items")
-    return { success: true, data: undefined, message: "Item berhasil dinonaktifkan" }
+    return { success: true, data: undefined, message: "Item deactivated successfully" }
   } catch (error) {
-    return { success: false, error: "Terjadi kesalahan sistem" }
+    return { success: false, error: "A system error occurred" }
   }
 }

@@ -24,10 +24,10 @@ export default async function NewPurchaseOrderPage() {
       <Breadcrumb
         items={[
           { label: "Purchase Orders", href: "/purchase-orders" },
-          { label: "Buat Baru" },
+          { label: "Create New" },
         ]}
       />
-      <PageHeader title="Buat Purchase Order" description="Isi detail pesanan pembelian" />
+      <PageHeader title="Create Purchase Order" description="Isi detail pesanan pembelian" />
       <Card>
         <CardContent className="pt-6">
           <POForm

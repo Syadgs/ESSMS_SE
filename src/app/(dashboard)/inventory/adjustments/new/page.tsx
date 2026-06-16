@@ -20,13 +20,13 @@ export default async function NewAdjustmentPage() {
     <>
       <Breadcrumb
         items={[
-          { label: "Penyesuaian Stok", href: "/inventory/adjustments" },
-          { label: "Penyesuaian Baru" },
+          { label: "Stock Adjustments", href: "/inventory/adjustments" },
+          { label: "Adjustment Baru" },
         ]}
       />
       <PageHeader
-        title="Penyesuaian Stok Baru"
-        description="Tambah atau kurangi stok item di gudang tertentu"
+        title="Stock Adjustments Baru"
+        description="Increase or decrease stock in a warehouse"
       />
       <AdjustmentForm itemOptions={itemOptions} warehouseOptions={warehouseOptions} />
     </>

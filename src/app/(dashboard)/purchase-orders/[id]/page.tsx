@@ -51,7 +51,7 @@ export default async function PurchaseOrderDetailPage({
             <StatusBadge status={po.status} />
           </div>
           <p className="text-sm text-muted-foreground mt-2">
-            Dibuat {formatDate(po.orderDate)} oleh {po.createdBy.name}
+            Created {formatDate(po.orderDate)} by {po.createdBy.name}
           </p>
         </div>
         <POActions
@@ -70,23 +70,23 @@ export default async function PurchaseOrderDetailPage({
       <div className="grid gap-4 md:grid-cols-2 mb-6">
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Informasi Supplier</CardTitle>
+            <CardTitle className="text-base">Information Supplier</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2 text-sm">
             <p><span className="text-muted-foreground">Nama:</span> {po.supplier.supplierName}</p>
             <p><span className="text-muted-foreground">Kode:</span> {po.supplier.supplierCode}</p>
             {po.supplier.contactPerson && (
-              <p><span className="text-muted-foreground">Kontak:</span> {po.supplier.contactPerson}</p>
+              <p><span className="text-muted-foreground">Contact:</span> {po.supplier.contactPerson}</p>
             )}
           </CardContent>
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Informasi Dokumen</CardTitle>
+            <CardTitle className="text-base">Information Dokumen</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2 text-sm">
             <p>
-              <span className="text-muted-foreground">Tanggal Order:</span>{" "}
+              <span className="text-muted-foreground">Date Order:</span>{" "}
               {formatDate(po.orderDate)}
             </p>
             {po.expectedDate && (
@@ -96,7 +96,7 @@ export default async function PurchaseOrderDetailPage({
               </p>
             )}
             {po.notes && (
-              <p><span className="text-muted-foreground">Catatan:</span> {po.notes}</p>
+              <p><span className="text-muted-foreground">Notes:</span> {po.notes}</p>
             )}
             <p>
               <span className="text-muted-foreground">GR:</span> {po.goodsReceipts.length} dokumen

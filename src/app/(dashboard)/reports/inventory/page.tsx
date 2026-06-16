@@ -17,18 +17,18 @@ type StockRow = {
 }
 
 const columns: ColumnDef<StockRow>[] = [
-  { accessorKey: "itemCode", header: "Kode Item" },
-  { accessorKey: "itemName", header: "Nama Item" },
+  { accessorKey: "itemCode", header: "Code Item" },
+  { accessorKey: "itemName", header: "Item Name" },
   {
     accessorKey: "itemType",
-    header: "Tipe",
+    header: "Type",
     cell: ({ row }) => (
       <Badge variant="outline" className="text-xs">
         {row.original.itemType}
       </Badge>
     ),
   },
-  { accessorKey: "warehouseName", header: "Gudang" },
+  { accessorKey: "warehouseName", header: "Warehouses" },
   {
     accessorKey: "quantity",
     header: "Qty",
@@ -40,14 +40,14 @@ const columns: ColumnDef<StockRow>[] = [
   },
   {
     accessorKey: "costPrice",
-    header: "Harga Pokok",
+    header: "Cost Price",
     cell: ({ row }) => (
       <span className="font-mono text-sm">{formatCurrency(row.original.costPrice)}</span>
     ),
   },
   {
     accessorKey: "stockValue",
-    header: "Nilai Stok",
+    header: "Amount Stok",
     cell: ({ row }) => (
       <span className="font-mono text-sm font-medium">
         {formatCurrency(row.original.stockValue)}
@@ -84,15 +84,15 @@ export default async function InventoryReportPage() {
   return (
     <div>
       <PageHeader
-        title="Laporan Stok"
-        description={`Total nilai stok: ${formatCurrency(totalValue)}`}
+        title="Inventory Report"
+        description={`Total stock value: ${formatCurrency(totalValue)}`}
       />
       <DataTable
         columns={columns}
         data={data}
         searchKey="itemName"
         searchPlaceholder="Cari item..."
-        emptyDescription="Belum ada data stok inventori"
+        emptyDescription="No data stok inventori"
       />
     </div>
   )

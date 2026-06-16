@@ -44,7 +44,7 @@ export function ActionButton({
       disabled={disabled || isPending}
       className={cn(className)}
     >
-      {isPending ? "Memproses..." : label}
+      {isPending ? "Processing..." : label}
     </Button>
   )
 }

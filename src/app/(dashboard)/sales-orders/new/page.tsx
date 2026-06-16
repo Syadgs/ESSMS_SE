@@ -23,10 +23,10 @@ export default async function NewSalesOrderPage() {
       <Breadcrumb
         items={[
           { label: "Sales Orders", href: "/sales-orders" },
-          { label: "Buat Baru" },
+          { label: "Create New" },
         ]}
       />
-      <PageHeader title="Buat Sales Order" description="Isi detail pesanan penjualan" />
+      <PageHeader title="Create Sales Order" description="Fill in sales order details" />
       <Card>
         <CardContent className="pt-6">
           <SOForm

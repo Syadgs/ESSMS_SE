@@ -33,7 +33,7 @@ const columns: ColumnDef<PackOrderRow>[] = [
   },
   {
     accessorKey: "packDate",
-    header: "Tanggal",
+    header: "Date",
     cell: ({ row }) => formatDate(row.original.packDate),
   },
   {
@@ -49,8 +49,8 @@ export function PackOrdersTable({ data }: { data: PackOrderRow[] }) {
       columns={columns}
       data={data}
       searchKey="soNumber"
-      searchPlaceholder="Cari nomor SO..."
-      emptyTitle="Belum ada Pack Order"
+      searchPlaceholder="Search SO..."
+      emptyTitle="No Pack Order"
     />
   )
 }

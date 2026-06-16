@@ -14,8 +14,8 @@ import { toast } from "sonner"
 import { Package } from "lucide-react"
 
 const loginSchema = z.object({
-  email: z.string().email("Email tidak valid"),
-  password: z.string().min(6, "Password minimal 6 karakter"),
+  email: z.string().email("Invalid email"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
 })
 
 type LoginForm = z.infer<typeof loginSchema>
@@ -44,12 +44,12 @@ export default function LoginPage() {
       })
 
       if (result?.error) {
-        setError("Email atau password salah")
-        toast.error("Login gagal")
+        setError("Invalid email or password")
+        toast.error("Sign in failed")
         return
       }
 
-      toast.success("Login berhasil")
+      toast.success("Signed in successfully")
       router.push("/dashboard")
       router.refresh()
     })
@@ -79,7 +79,7 @@ export default function LoginPage() {
             </div>
             {error && <p className="text-sm text-destructive text-center">{error}</p>}
             <Button type="submit" className="w-full" disabled={isPending}>
-              {isPending ? "Masuk..." : "Masuk"}
+              {isPending ? "Sign in..." : "Sign in"}
             </Button>
           </form>
           <p className="text-xs text-muted-foreground text-center mt-4">

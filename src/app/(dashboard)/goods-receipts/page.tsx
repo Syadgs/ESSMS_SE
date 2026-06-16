@@ -30,10 +30,10 @@ export default async function GoodsReceiptsPage() {
   return (
     <>
       <Breadcrumb items={[{ label: "Goods Receipt" }]} />
-      <PageHeader title="Goods Receipt" description="Penerimaan barang dari supplier">
+      <PageHeader title="Goods Receipt" description="Receipt barang from suppliers">
         {hasPermission(role, "goods_receipts", "create") && (
           <Button asChild>
-            <Link href="/goods-receipts/new"><Plus className="h-4 w-4 mr-1" />Buat GR</Link>
+            <Link href="/goods-receipts/new"><Plus className="h-4 w-4 mr-1" />Create GR</Link>
           </Button>
         )}
       </PageHeader>

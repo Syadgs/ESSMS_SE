@@ -21,8 +21,16 @@ import {
   Building2,
   Users,
   BarChart3,
+  AlertTriangle,
+  ClipboardList,
+  UserCog,
+  Warehouse,
+  Settings,
+  BookOpen,
+  X,
 } from "lucide-react"
 import type { Role } from "@prisma/client"
+import { Button } from "@/components/ui/button"
 
 type MenuItem = {
   label: string
@@ -47,19 +55,19 @@ const menuItems: MenuSection[] = [
     section: "Item Management",
     items: [
       {
-        label: "Master Item",
+        label: "Item Master",
         href: "/items",
         icon: Package,
         roles: ["INVENTORY_MANAGER", "ADMIN", "PURCHASING_MANAGER", "SALES_REP", "SALES_MANAGER"],
       },
       {
-        label: "Inventory Adjustment",
+        label: "Adjustments",
         href: "/inventory/adjustments",
         icon: ArrowUpDown,
         roles: ["INVENTORY_MANAGER", "ADMIN"],
       },
       {
-        label: "Inventory Transfer",
+        label: "Transfers",
         href: "/inventory/transfers",
         icon: ArrowRightLeft,
         roles: ["INVENTORY_MANAGER", "ADMIN"],
@@ -142,22 +150,69 @@ const menuItems: MenuSection[] = [
     section: "Reports",
     items: [
       {
-        label: "Laporan Stok",
+        label: "All Reports",
+        href: "/reports",
+        icon: BookOpen,
+        roles: ["INVENTORY_MANAGER", "ADMIN", "PURCHASING_MANAGER", "ACCOUNTING_MANAGER", "SALES_MANAGER", "AR_ANALYST", "AP_ANALYST"],
+      },
+      {
+        label: "Inventory Report",
         href: "/reports/inventory",
         icon: BarChart3,
         roles: ["INVENTORY_MANAGER", "ADMIN", "PURCHASING_MANAGER"],
       },
       {
-        label: "Laporan Pembelian",
+        label: "Purchase Report",
         href: "/reports/purchases",
         icon: BarChart3,
         roles: ["PURCHASING_MANAGER", "ACCOUNTING_MANAGER", "ADMIN"],
       },
       {
-        label: "Laporan Penjualan",
+        label: "Sales Report",
         href: "/reports/sales",
         icon: BarChart3,
         roles: ["SALES_MANAGER", "AR_ANALYST", "ADMIN"],
+      },
+      {
+        label: "AR Aging",
+        href: "/reports/ar-aging",
+        icon: AlertTriangle,
+        roles: ["AR_ANALYST", "ACCOUNTING_MANAGER", "ADMIN"],
+      },
+      {
+        label: "AP Aging",
+        href: "/reports/ap-aging",
+        icon: AlertTriangle,
+        roles: ["AP_ANALYST", "ACCOUNTING_MANAGER", "ADMIN"],
+      },
+      {
+        label: "Physical Inventory",
+        href: "/reports/physical-inventory",
+        icon: ClipboardList,
+        roles: ["INVENTORY_MANAGER", "ADMIN"],
+      },
+    ],
+  },
+  {
+    section: "Admin",
+    items: [
+      {
+        label: "Users",
+        href: "/admin/users",
+        icon: UserCog,
+        roles: ["ADMIN"],
+      },
+      {
+        label: "Warehouses",
+        href: "/admin/warehouses",
+        icon: Warehouse,
+        roles: ["ADMIN"],
+      },
+      {
+        label: "Dept & Class",
+        href: "/admin/departments",
+        icon: Settings,
+        roles: ["ADMIN"],
       },
     ],
   },
@@ -169,56 +224,92 @@ function canAccess(roles: (Role | "ALL")[], userRole: Role) {
 
 interface SidebarProps {
   userRole: Role
+  open?: boolean
+  onClose?: () => void
 }
 
-export function Sidebar({ userRole }: SidebarProps) {
+function SidebarNav({ userRole, onNavigate }: { userRole: Role; onNavigate?: () => void }) {
   const pathname = usePathname()
 
   return (
-    <aside className="sidebar fixed left-0 top-0 z-40 h-screen w-64 flex flex-col text-white">
-      <div className="flex h-16 items-center px-6 border-b border-white/10">
-        <div>
-          <h2 className="text-lg font-serif tracking-wide">ESSMS</h2>
-          <p className="text-[10px] text-white/50 uppercase tracking-widest">Supply Chain</p>
+    <nav className="flex-1 overflow-y-auto py-4 px-3">
+      {menuItems.map((section) => {
+        const visibleItems = section.items.filter((item) => canAccess(item.roles, userRole))
+        if (visibleItems.length === 0) return null
+
+        return (
+          <div key={section.section} className="mb-4">
+            <p className="px-3 mb-1.5 text-[10px] font-semibold uppercase tracking-widest text-white/40">
+              {section.section}
+            </p>
+            <ul className="space-y-0.5">
+              {visibleItems.map((item) => {
+                const isActive = pathname === item.href || pathname.startsWith(item.href + "/")
+                const Icon = item.icon
+                return (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      onClick={onNavigate}
+                      className={cn(
+                        "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors",
+                        isActive
+                          ? "bg-amber-500/20 text-amber-400 font-medium"
+                          : "text-white/70 hover:bg-white/5 hover:text-white"
+                      )}
+                    >
+                      <Icon className="h-4 w-4 shrink-0" />
+                      <span className="truncate">{item.label}</span>
+                    </Link>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+        )
+      })}
+    </nav>
+  )
+}
+
+export function Sidebar({ userRole, open = false, onClose }: SidebarProps) {
+  return (
+    <>
+      {/* Mobile overlay */}
+      {open && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+          onClick={onClose}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Sidebar panel */}
+      <aside
+        className={cn(
+          "sidebar fixed left-0 top-0 z-50 flex h-screen w-64 flex-col text-white transition-transform duration-300 ease-in-out",
+          "lg:translate-x-0",
+          open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+        )}
+      >
+        <div className="flex h-16 shrink-0 items-center justify-between border-b border-white/10 px-5">
+          <div>
+            <h2 className="text-lg font-serif tracking-wide">ESSMS</h2>
+            <p className="text-[10px] text-white/50 uppercase tracking-widest">Supply Chain</p>
+          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="lg:hidden text-white/70 hover:text-white hover:bg-white/10"
+            onClick={onClose}
+            aria-label="Close menu"
+          >
+            <X className="h-5 w-5" />
+          </Button>
         </div>
-      </div>
 
-      <nav className="flex-1 overflow-y-auto py-4 px-3">
-        {menuItems.map((section) => {
-          const visibleItems = section.items.filter((item) => canAccess(item.roles, userRole))
-          if (visibleItems.length === 0) return null
-
-          return (
-            <div key={section.section} className="mb-4">
-              <p className="px-3 mb-1 text-[10px] font-semibold uppercase tracking-widest text-white/40">
-                {section.section}
-              </p>
-              <ul className="space-y-0.5">
-                {visibleItems.map((item) => {
-                  const isActive = pathname === item.href || pathname.startsWith(item.href + "/")
-                  const Icon = item.icon
-                  return (
-                    <li key={item.href}>
-                      <Link
-                        href={item.href}
-                        className={cn(
-                          "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
-                          isActive
-                            ? "bg-amber-500/20 text-amber-400 font-medium"
-                            : "text-white/70 hover:bg-white/5 hover:text-white"
-                        )}
-                      >
-                        <Icon className="h-4 w-4 shrink-0" />
-                        {item.label}
-                      </Link>
-                    </li>
-                  )
-                })}
-              </ul>
-            </div>
-          )
-        })}
-      </nav>
-    </aside>
+        <SidebarNav userRole={userRole} onNavigate={onClose} />
+      </aside>
+    </>
   )
 }

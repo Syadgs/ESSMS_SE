@@ -31,7 +31,7 @@ export function RejectDialog({
   title,
   description,
   action,
-  noteLabel = "Alasan penolakan",
+  noteLabel = "Rejection reason",
 }: RejectDialogProps) {
   const router = useRouter()
   const [note, setNote] = useState("")
@@ -39,7 +39,7 @@ export function RejectDialog({
 
   function handleReject() {
     if (!note.trim()) {
-      toast.error("Alasan penolakan wajib diisi")
+      toast.error("Rejection reason is required")
       return
     }
     startTransition(async () => {
@@ -68,16 +68,16 @@ export function RejectDialog({
             id="reject-note"
             value={note}
             onChange={(e) => setNote(e.target.value)}
-            placeholder="Jelaskan alasan penolakan..."
+            placeholder="Explain the reason for rejection..."
             rows={3}
           />
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isPending}>
-            Batal
+            Cancel
           </Button>
           <Button variant="destructive" onClick={handleReject} disabled={isPending}>
-            {isPending ? "Memproses..." : "Tolak"}
+            {isPending ? "Processing..." : "Reject"}
           </Button>
         </DialogFooter>
       </DialogContent>

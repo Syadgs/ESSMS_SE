@@ -13,10 +13,10 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { createSupplier } from "@/actions/supplier.actions"
 
 const supplierFormSchema = z.object({
-  supplierCode: z.string().min(1, "Kode supplier wajib diisi"),
-  supplierName: z.string().min(1, "Nama supplier wajib diisi"),
+  supplierCode: z.string().min(1, "Code supplier is required"),
+  supplierName: z.string().min(1, "Nama supplier is required"),
   contactPerson: z.string().optional(),
-  email: z.string().email("Email tidak valid").optional().or(z.literal("")),
+  email: z.string().email("Invalid email").optional().or(z.literal("")),
   phone: z.string().optional(),
   address: z.string().optional(),
 })
@@ -66,7 +66,7 @@ export function SupplierForm() {
         <CardContent className="pt-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <Label htmlFor="supplierCode">Kode Supplier</Label>
+              <Label htmlFor="supplierCode">Code Supplier</Label>
               <Input id="supplierCode" {...register("supplierCode")} placeholder="SUP-001" />
               {errors.supplierCode && (
                 <p className="text-sm text-destructive">{errors.supplierCode.message}</p>
@@ -82,7 +82,7 @@ export function SupplierForm() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="contactPerson">Kontak Person</Label>
+              <Label htmlFor="contactPerson">Contact Person</Label>
               <Input id="contactPerson" {...register("contactPerson")} />
             </div>
 
@@ -107,10 +107,10 @@ export function SupplierForm() {
         </CardContent>
         <CardFooter className="flex justify-end gap-2 border-t pt-6">
           <Button type="button" variant="outline" onClick={() => router.back()}>
-            Batal
+            Cancel
           </Button>
           <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Menyimpan..." : "Buat Supplier"}
+            {isSubmitting ? "Saving..." : "Create Supplier"}
           </Button>
         </CardFooter>
       </Card>

@@ -13,10 +13,10 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { createCustomer } from "@/actions/customer.actions"
 
 const customerFormSchema = z.object({
-  customerCode: z.string().min(1, "Kode pelanggan wajib diisi"),
-  customerName: z.string().min(1, "Nama pelanggan wajib diisi"),
+  customerCode: z.string().min(1, "Code customer is required"),
+  customerName: z.string().min(1, "Nama customer is required"),
   contactPerson: z.string().optional(),
-  email: z.string().email("Email tidak valid").optional().or(z.literal("")),
+  email: z.string().email("Invalid email").optional().or(z.literal("")),
   phone: z.string().optional(),
   address: z.string().optional(),
   creditLimit: z.coerce.number().min(0),
@@ -68,7 +68,7 @@ export function CustomerForm() {
         <CardContent className="pt-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <Label htmlFor="customerCode">Kode Pelanggan</Label>
+              <Label htmlFor="customerCode">Code Customers</Label>
               <Input id="customerCode" {...register("customerCode")} placeholder="CUS-001" />
               {errors.customerCode && (
                 <p className="text-sm text-destructive">{errors.customerCode.message}</p>
@@ -76,15 +76,15 @@ export function CustomerForm() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="customerName">Nama Pelanggan</Label>
-              <Input id="customerName" {...register("customerName")} placeholder="Nama pelanggan" />
+              <Label htmlFor="customerName">Nama Customers</Label>
+              <Input id="customerName" {...register("customerName")} placeholder="Nama customer" />
               {errors.customerName && (
                 <p className="text-sm text-destructive">{errors.customerName.message}</p>
               )}
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="contactPerson">Kontak Person</Label>
+              <Label htmlFor="contactPerson">Contact Person</Label>
               <Input id="contactPerson" {...register("contactPerson")} />
             </div>
 
@@ -117,10 +117,10 @@ export function CustomerForm() {
         </CardContent>
         <CardFooter className="flex justify-end gap-2 border-t pt-6">
           <Button type="button" variant="outline" onClick={() => router.back()}>
-            Batal
+            Cancel
           </Button>
           <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Menyimpan..." : "Buat Pelanggan"}
+            {isSubmitting ? "Saving..." : "Create Customers"}
           </Button>
         </CardFooter>
       </Card>

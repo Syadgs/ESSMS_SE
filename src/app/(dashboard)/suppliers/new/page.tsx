@@ -8,12 +8,12 @@ export default function NewSupplierPage() {
       <Breadcrumb
         items={[
           { label: "Supplier", href: "/suppliers" },
-          { label: "Supplier Baru" },
+          { label: "New Supplier" },
         ]}
       />
       <PageHeader
-        title="Supplier Baru"
-        description="Tambahkan supplier baru ke master data"
+        title="New Supplier"
+        description="Add supplier to master data"
       />
       <SupplierForm />
     </>

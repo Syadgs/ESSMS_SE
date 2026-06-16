@@ -23,19 +23,19 @@ export function BillActions({ billId, status, canCreate, canApprove }: BillActio
   return (
     <div className="flex gap-2 flex-wrap">
       {status === "DRAFT" && canCreate && (
-        <ActionButton label="Ajukan Persetujuan" action={() => submitVendorBill(billId)} />
+        <ActionButton label="Submit for Approval" action={() => submitVendorBill(billId)} />
       )}
       {status === "PENDING_APPROVAL" && canApprove && (
         <>
-          <ActionButton label="Setujui" action={() => approveVendorBill(billId)} />
+          <ActionButton label="Approve" action={() => approveVendorBill(billId)} />
           <Button variant="destructive" onClick={() => setShowReject(true)}>
-            Tolak
+            Reject
           </Button>
           <RejectDialog
             open={showReject}
             onOpenChange={setShowReject}
-            title="Tolak Vendor Bill"
-            description="Berikan alasan penolakan vendor bill ini."
+            title="Reject Vendor Bill"
+            description="Provide a reason for rejecting this vendor bill."
             action={(note) => rejectVendorBill(billId, note)}
           />
         </>

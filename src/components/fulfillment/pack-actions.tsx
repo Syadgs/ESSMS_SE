@@ -35,11 +35,11 @@ export function PackActions({ packId, status, canManage, hasShipment }: PackActi
   return (
     <div className="flex gap-2 flex-wrap">
       {status === "DRAFT" && (
-        <ActionButton label="Selesaikan Packing" action={() => completePackOrder(packId)} />
+        <ActionButton label="Completedkan Packing" action={() => completePackOrder(packId)} />
       )}
       {status === "COMPLETED" && !hasShipment && (
         <Button onClick={handleCreateShipment} disabled={isPending}>
-          {isPending ? "Membuat..." : "Buat Shipment"}
+          {isPending ? "Creating..." : "Create Shipment"}
         </Button>
       )}
     </div>

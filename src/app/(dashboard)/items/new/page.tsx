@@ -8,12 +8,12 @@ export default function NewItemPage() {
       <Breadcrumb
         items={[
           { label: "Master Item", href: "/items" },
-          { label: "Item Baru" },
+          { label: "New Item" },
         ]}
       />
       <PageHeader
-        title="Item Baru"
-        description="Tambahkan item baru ke master data"
+        title="New Item"
+        description="Add item to master data"
       />
       <ItemForm />
     </>

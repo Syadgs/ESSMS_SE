@@ -84,7 +84,7 @@ export function GRForm({ purchaseOrders, warehouses }: GRFormProps) {
           <Label>Purchase Order *</Label>
           <Select value={poId} onValueChange={setPoId} required>
             <SelectTrigger>
-              <SelectValue placeholder="Pilih PO" />
+              <SelectValue placeholder="Select PO" />
             </SelectTrigger>
             <SelectContent>
               {purchaseOrders.map((po) => (
@@ -96,10 +96,10 @@ export function GRForm({ purchaseOrders, warehouses }: GRFormProps) {
           </Select>
         </div>
         <div className="space-y-2">
-          <Label>Gudang *</Label>
+          <Label>Warehouses *</Label>
           <Select value={warehouseId} onValueChange={setWarehouseId} required>
             <SelectTrigger>
-              <SelectValue placeholder="Pilih gudang" />
+              <SelectValue placeholder="Select warehouse" />
             </SelectTrigger>
             <SelectContent>
               {warehouses.map((w) => (
@@ -119,7 +119,7 @@ export function GRForm({ purchaseOrders, warehouses }: GRFormProps) {
               <tr>
                 <th className="text-left p-3">Item</th>
                 <th className="text-right p-3 w-24">Qty Order</th>
-                <th className="text-right p-3 w-32">Qty Diterima</th>
+                <th className="text-right p-3 w-32">Qty Received</th>
               </tr>
             </thead>
             <tbody>
@@ -149,16 +149,16 @@ export function GRForm({ purchaseOrders, warehouses }: GRFormProps) {
       )}
 
       <div className="space-y-2">
-        <Label>Catatan</Label>
+        <Label>Notes</Label>
         <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} />
       </div>
 
       <div className="flex gap-2">
         <Button type="button" variant="outline" onClick={() => router.back()}>
-          Batal
+          Cancel
         </Button>
         <Button type="submit" disabled={isPending || !poId || !warehouseId}>
-          {isPending ? "Menyimpan..." : "Simpan Goods Receipt"}
+          {isPending ? "Saving..." : "Save Goods Receipt"}
         </Button>
       </div>
     </form>

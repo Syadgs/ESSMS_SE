@@ -32,11 +32,11 @@ export default async function BillPaymentsPage() {
   return (
     <>
       <Breadcrumb items={[{ label: "Bill Payments" }]} />
-      <PageHeader title="Bill Payments" description="Pembayaran tagihan supplier">
+      <PageHeader title="Bill Payments" description="Vendor bill payments">
         <Button asChild>
           <Link href="/bill-payments/new">
             <Plus className="h-4 w-4 mr-1" />
-            Catat Pembayaran
+            Record Payment
           </Link>
         </Button>
       </PageHeader>

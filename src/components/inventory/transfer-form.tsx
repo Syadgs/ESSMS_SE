@@ -21,10 +21,10 @@ import { createTransfer } from "@/actions/inventory.actions"
 import type { SelectOption } from "@/types"
 
 const transferFormSchema = z.object({
-  itemId: z.string().min(1, "Item wajib dipilih"),
-  fromWarehouseId: z.string().min(1, "Gudang asal wajib dipilih"),
-  toWarehouseId: z.string().min(1, "Gudang tujuan wajib dipilih"),
-  quantity: z.coerce.number().int().min(1, "Jumlah minimal 1"),
+  itemId: z.string().min(1, "Item must be selected"),
+  fromWarehouseId: z.string().min(1, "Warehouses asal must be selected"),
+  toWarehouseId: z.string().min(1, "Warehouses tujuan must be selected"),
+  quantity: z.coerce.number().int().min(1, "Jumlah at least 1"),
   notes: z.string().optional(),
 })
 
@@ -83,7 +83,7 @@ export function TransferForm({ itemOptions, warehouseOptions }: TransferFormProp
               <Label>Item</Label>
               <Select value={itemId} onValueChange={(v) => setValue("itemId", v)}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Pilih item" />
+                  <SelectValue placeholder="Select item" />
                 </SelectTrigger>
                 <SelectContent>
                   {itemOptions.map((opt) => (
@@ -99,10 +99,10 @@ export function TransferForm({ itemOptions, warehouseOptions }: TransferFormProp
             </div>
 
             <div className="space-y-2">
-              <Label>Gudang Asal</Label>
+              <Label>Warehouses Asal</Label>
               <Select value={fromWarehouseId} onValueChange={(v) => setValue("fromWarehouseId", v)}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Pilih gudang asal" />
+                  <SelectValue placeholder="Select warehouse asal" />
                 </SelectTrigger>
                 <SelectContent>
                   {warehouseOptions.map((opt) => (
@@ -118,10 +118,10 @@ export function TransferForm({ itemOptions, warehouseOptions }: TransferFormProp
             </div>
 
             <div className="space-y-2">
-              <Label>Gudang Tujuan</Label>
+              <Label>Warehouses Tujuan</Label>
               <Select value={toWarehouseId} onValueChange={(v) => setValue("toWarehouseId", v)}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Pilih gudang tujuan" />
+                  <SelectValue placeholder="Select destination warehouse" />
                 </SelectTrigger>
                 <SelectContent>
                   {warehouseOptions.map((opt) => (
@@ -145,17 +145,17 @@ export function TransferForm({ itemOptions, warehouseOptions }: TransferFormProp
             </div>
 
             <div className="space-y-2 md:col-span-2">
-              <Label htmlFor="notes">Catatan</Label>
-              <Textarea id="notes" {...register("notes")} rows={3} placeholder="Catatan transfer (opsional)" />
+              <Label htmlFor="notes">Notes</Label>
+              <Textarea id="notes" {...register("notes")} rows={3} placeholder="Transfer notes (optional)" />
             </div>
           </div>
         </CardContent>
         <CardFooter className="flex justify-end gap-2 border-t pt-6">
           <Button type="button" variant="outline" onClick={() => router.back()}>
-            Batal
+            Cancel
           </Button>
           <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Menyimpan..." : "Buat Transfer"}
+            {isSubmitting ? "Saving..." : "Create Transfer"}
           </Button>
         </CardFooter>
       </Card>

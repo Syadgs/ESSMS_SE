@@ -5,6 +5,7 @@ import { ColumnDef } from "@tanstack/react-table"
 import { DataTable } from "@/components/shared/data-table"
 import { StatusBadge } from "@/components/shared/status-badge"
 import { formatCurrency, formatDate } from "@/lib/utils"
+import { Badge } from "@/components/ui/badge"
 
 export type VendorBillRow = {
   id: string
@@ -15,6 +16,7 @@ export type VendorBillRow = {
   dueDate: string
   totalAmount: number
   status: string
+  billType?: string
 }
 
 const columns: ColumnDef<VendorBillRow>[] = [
@@ -28,15 +30,33 @@ const columns: ColumnDef<VendorBillRow>[] = [
     ),
   },
   { accessorKey: "supplierName", header: "Supplier" },
-  { accessorKey: "poNumber", header: "No. PO" },
+  {
+    accessorKey: "billType",
+    header: "Type",
+    cell: ({ row }) => {
+      const billType = row.original.billType
+      return billType === "STANDALONE" ? (
+        <Badge variant="outline" className="text-xs border-purple-300 text-purple-700">Standalone</Badge>
+      ) : (
+        <Badge variant="outline" className="text-xs border-blue-300 text-blue-700">PO-Based</Badge>
+      )
+    },
+  },
+  {
+    accessorKey: "poNumber",
+    header: "No. PO",
+    cell: ({ row }) => (
+      <span className="text-muted-foreground font-mono text-xs">{row.original.poNumber}</span>
+    ),
+  },
   {
     accessorKey: "billDate",
-    header: "Tanggal",
+    header: "Date",
     cell: ({ row }) => formatDate(row.original.billDate),
   },
   {
     accessorKey: "dueDate",
-    header: "Jatuh Tempo",
+    header: "Overdue",
     cell: ({ row }) => formatDate(row.original.dueDate),
   },
   {
@@ -59,9 +79,9 @@ export function VendorBillsTable({ data }: { data: VendorBillRow[] }) {
       columns={columns}
       data={data}
       searchKey="billNumber"
-      searchPlaceholder="Cari nomor bill..."
-      emptyTitle="Belum ada Vendor Bill"
-      emptyDescription="Buat vendor bill dari purchase order"
+      searchPlaceholder="Search bill..."
+      emptyTitle="No Vendor Bill"
+      emptyDescription="Create vendor bill from purchase order or standalone"
     />
   )
 }

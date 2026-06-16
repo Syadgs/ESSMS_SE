@@ -12,7 +12,7 @@ import type { ActionResult } from "@/types"
 
 const CreatePickSchema = z.object({
   soId: z.string().min(1),
-  warehouseId: z.string().min(1, "Gudang wajib dipilih"),
+  warehouseId: z.string().min(1, "Warehouses must be selected"),
   notes: z.string().optional(),
 })
 
@@ -114,9 +114,10 @@ export async function createPickOrder(
 ): Promise<ActionResult<{ id: string }>> {
   try {
     const session = await auth()
-    if (!session?.user?.id) return { success: false, error: "Unauthorized" }
+    const userId = session?.user?.id
+    if (!userId) return { success: false, error: "Unauthorized" }
     if (!hasPermission(session.user.role as Role, "pick_pack_ship", "manage")) {
-      return { success: false, error: "Anda tidak memiliki izin" }
+      return { success: false, error: "You do not have permission" }
     }
 
     const validated = CreatePickSchema.safeParse(formData)
@@ -128,9 +129,9 @@ export async function createPickOrder(
       where: { id: validated.data.soId },
       include: { items: true },
     })
-    if (!so) return { success: false, error: "Sales Order tidak ditemukan" }
+    if (!so) return { success: false, error: "Sales Order not found" }
     if (!["APPROVED", "PROCESSING"].includes(so.status)) {
-      return { success: false, error: "SO harus berstatus APPROVED atau PROCESSING" }
+      return { success: false, error: "SO must be APPROVED or PROCESSING" }
     }
 
     for (const soItem of so.items) {
@@ -143,7 +144,7 @@ export async function createPickOrder(
         },
       })
       if (!stock || stock.quantity < soItem.quantity) {
-        return { success: false, error: "Stok tidak mencukupi di gudang yang dipilih" }
+        return { success: false, error: "Insufficient stock in selected warehouse" }
       }
     }
 
@@ -159,7 +160,7 @@ export async function createPickOrder(
         data: {
           soId: validated.data.soId,
           warehouseId: validated.data.warehouseId,
-          pickedById: session.user!.id,
+          pickedById: userId,
           notes: validated.data.notes,
         },
       })
@@ -174,10 +175,10 @@ export async function createPickOrder(
 
     revalidatePath("/pick-orders")
     revalidatePath(`/sales-orders/${so.id}`)
-    return { success: true, data: { id: pick.id }, message: "Pick Order berhasil dibuat" }
+    return { success: true, data: { id: pick.id }, message: "Pick Order created successfully" }
   } catch (error) {
     console.error("createPickOrder error:", error)
-    return { success: false, error: "Terjadi kesalahan sistem" }
+    return { success: false, error: "A system error occurred" }
   }
 }
 
@@ -186,11 +187,11 @@ export async function startPickOrder(pickId: string): Promise<ActionResult> {
     const session = await auth()
     if (!session?.user) return { success: false, error: "Unauthorized" }
     if (!hasPermission(session.user.role as Role, "pick_pack_ship", "manage")) {
-      return { success: false, error: "Anda tidak memiliki izin" }
+      return { success: false, error: "You do not have permission" }
     }
 
     const pick = await prisma.pickOrder.findUnique({ where: { id: pickId } })
-    if (!pick) return { success: false, error: "Pick Order tidak ditemukan" }
+    if (!pick) return { success: false, error: "Pick Order not found" }
 
     const transition = validateStatusTransition("PICK", pick.status, "IN_PROGRESS")
     if (!transition.valid) return { success: false, error: transition.error! }
@@ -201,9 +202,9 @@ export async function startPickOrder(pickId: string): Promise<ActionResult> {
     })
 
     revalidatePath(`/pick-orders/${pickId}`)
-    return { success: true, data: undefined, message: "Picking dimulai" }
+    return { success: true, data: undefined, message: "Picking started" }
   } catch (error) {
-    return { success: false, error: "Terjadi kesalahan sistem" }
+    return { success: false, error: "A system error occurred" }
   }
 }
 
@@ -216,11 +217,11 @@ export async function completePickOrder(pickId: string): Promise<ActionResult> {
     const session = await auth()
     if (!session?.user) return { success: false, error: "Unauthorized" }
     if (!hasPermission(session.user.role as Role, "pick_pack_ship", "manage")) {
-      return { success: false, error: "Anda tidak memiliki izin" }
+      return { success: false, error: "You do not have permission" }
     }
 
     const pick = await prisma.pickOrder.findUnique({ where: { id: pickId } })
-    if (!pick) return { success: false, error: "Pick Order tidak ditemukan" }
+    if (!pick) return { success: false, error: "Pick Order not found" }
 
     const transition = validateStatusTransition("PICK", pick.status, "COMPLETED")
     if (!transition.valid) return { success: false, error: transition.error! }
@@ -233,7 +234,7 @@ export async function completePickOrder(pickId: string): Promise<ActionResult> {
     revalidatePath(`/pick-orders/${pickId}`)
     return { success: true, data: undefined, message: "Picking selesai" }
   } catch (error) {
-    return { success: false, error: "Terjadi kesalahan sistem" }
+    return { success: false, error: "A system error occurred" }
   }
 }
 
@@ -242,9 +243,10 @@ export async function createPackOrder(
 ): Promise<ActionResult<{ id: string }>> {
   try {
     const session = await auth()
-    if (!session?.user?.id) return { success: false, error: "Unauthorized" }
+    const userId = session?.user?.id
+    if (!userId) return { success: false, error: "Unauthorized" }
     if (!hasPermission(session.user.role as Role, "pick_pack_ship", "manage")) {
-      return { success: false, error: "Anda tidak memiliki izin" }
+      return { success: false, error: "You do not have permission" }
     }
 
     const validated = CreatePackSchema.safeParse(formData)
@@ -256,17 +258,17 @@ export async function createPackOrder(
       where: { id: validated.data.pickOrderId },
       include: { packOrder: true },
     })
-    if (!pick) return { success: false, error: "Pick Order tidak ditemukan" }
+    if (!pick) return { success: false, error: "Pick Order not found" }
     if (pick.status !== "COMPLETED") {
-      return { success: false, error: "Pick Order harus selesai terlebih dahulu" }
+      return { success: false, error: "Pick order must be completed first" }
     }
-    if (pick.packOrder) return { success: false, error: "Pack Order sudah ada" }
+    if (pick.packOrder) return { success: false, error: "Pack order already exists" }
 
     const pack = await prisma.$transaction(async (tx) => {
       const created = await tx.packOrder.create({
         data: {
           pickOrderId: pick.id,
-          packedById: session.user!.id,
+          packedById: userId,
           packageCount: validated.data.packageCount,
           totalWeight: validated.data.totalWeight,
           notes: validated.data.notes,
@@ -283,9 +285,9 @@ export async function createPackOrder(
 
     revalidatePath("/pack-orders")
     revalidatePath(`/pick-orders/${pick.id}`)
-    return { success: true, data: { id: pack.id }, message: "Pack Order berhasil dibuat" }
+    return { success: true, data: { id: pack.id }, message: "Pack Order created successfully" }
   } catch (error) {
-    return { success: false, error: "Terjadi kesalahan sistem" }
+    return { success: false, error: "A system error occurred" }
   }
 }
 
@@ -298,11 +300,11 @@ export async function completePackOrder(packId: string): Promise<ActionResult> {
     const session = await auth()
     if (!session?.user) return { success: false, error: "Unauthorized" }
     if (!hasPermission(session.user.role as Role, "pick_pack_ship", "manage")) {
-      return { success: false, error: "Anda tidak memiliki izin" }
+      return { success: false, error: "You do not have permission" }
     }
 
     const pack = await prisma.packOrder.findUnique({ where: { id: packId } })
-    if (!pack) return { success: false, error: "Pack Order tidak ditemukan" }
+    if (!pack) return { success: false, error: "Pack Order not found" }
 
     const transition = validateStatusTransition("PACK", pack.status, "COMPLETED")
     if (!transition.valid) return { success: false, error: transition.error! }
@@ -315,7 +317,7 @@ export async function completePackOrder(packId: string): Promise<ActionResult> {
     revalidatePath(`/pack-orders/${packId}`)
     return { success: true, data: undefined, message: "Packing selesai" }
   } catch (error) {
-    return { success: false, error: "Terjadi kesalahan sistem" }
+    return { success: false, error: "A system error occurred" }
   }
 }
 
@@ -324,9 +326,10 @@ export async function createShipment(
 ): Promise<ActionResult<{ id: string }>> {
   try {
     const session = await auth()
-    if (!session?.user?.id) return { success: false, error: "Unauthorized" }
+    const userId = session?.user?.id
+    if (!userId) return { success: false, error: "Unauthorized" }
     if (!hasPermission(session.user.role as Role, "pick_pack_ship", "manage")) {
-      return { success: false, error: "Anda tidak memiliki izin" }
+      return { success: false, error: "You do not have permission" }
     }
 
     const validated = CreateShipmentSchema.safeParse(formData)
@@ -338,11 +341,11 @@ export async function createShipment(
       where: { id: validated.data.packOrderId },
       include: { pickOrder: true, shipment: true },
     })
-    if (!pack) return { success: false, error: "Pack Order tidak ditemukan" }
+    if (!pack) return { success: false, error: "Pack Order not found" }
     if (pack.status !== "COMPLETED") {
-      return { success: false, error: "Pack Order harus selesai terlebih dahulu" }
+      return { success: false, error: "Pack order must be completed first" }
     }
-    if (pack.shipment) return { success: false, error: "Shipment sudah ada" }
+    if (pack.shipment) return { success: false, error: "Shipment already exists" }
 
     const shipmentNumber = await generateDocNumber("SHP")
 
@@ -351,7 +354,7 @@ export async function createShipment(
         shipmentNumber,
         packOrderId: pack.id,
         soId: pack.pickOrder.soId,
-        shippedById: session.user.id,
+        shippedById: userId,
         trackingNumber: validated.data.trackingNumber,
         carrier: validated.data.carrier,
         notes: validated.data.notes,
@@ -359,9 +362,9 @@ export async function createShipment(
     })
 
     revalidatePath("/shipments")
-    return { success: true, data: { id: shipment.id }, message: `Shipment ${shipmentNumber} berhasil dibuat` }
+    return { success: true, data: { id: shipment.id }, message: `Shipment ${shipmentNumber} created successfully` }
   } catch (error) {
-    return { success: false, error: "Terjadi kesalahan sistem" }
+    return { success: false, error: "A system error occurred" }
   }
 }
 
@@ -370,7 +373,7 @@ export async function confirmShipment(shipmentId: string): Promise<ActionResult>
     const session = await auth()
     if (!session?.user) return { success: false, error: "Unauthorized" }
     if (!hasPermission(session.user.role as Role, "pick_pack_ship", "manage")) {
-      return { success: false, error: "Anda tidak memiliki izin" }
+      return { success: false, error: "You do not have permission" }
     }
 
     const shipment = await prisma.shipment.findUnique({
@@ -380,7 +383,7 @@ export async function confirmShipment(shipmentId: string): Promise<ActionResult>
         salesOrder: { include: { items: true } },
       },
     })
-    if (!shipment) return { success: false, error: "Shipment tidak ditemukan" }
+    if (!shipment) return { success: false, error: "Shipment not found" }
 
     const transition = validateStatusTransition("SHIP", shipment.status, "SHIPPED")
     if (!transition.valid) return { success: false, error: transition.error! }
@@ -396,7 +399,7 @@ export async function confirmShipment(shipmentId: string): Promise<ActionResult>
         })
 
         if (!stock || stock.quantity < soItem.quantity) {
-          throw new Error(`Stok tidak cukup untuk item ${soItem.itemId}`)
+          throw new Error(`Insufficient stock for item ${soItem.itemId}`)
         }
 
         await tx.inventoryStock.update({
@@ -420,7 +423,7 @@ export async function confirmShipment(shipmentId: string): Promise<ActionResult>
     revalidatePath(`/sales-orders/${shipment.soId}`)
     return { success: true, data: undefined, message: "Shipment dikonfirmasi & stok dikurangi" }
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Terjadi kesalahan sistem"
+    const message = error instanceof Error ? error.message : "A system error occurred"
     return { success: false, error: message }
   }
 }
@@ -430,11 +433,11 @@ export async function deliverShipment(shipmentId: string): Promise<ActionResult>
     const session = await auth()
     if (!session?.user) return { success: false, error: "Unauthorized" }
     if (!hasPermission(session.user.role as Role, "pick_pack_ship", "manage")) {
-      return { success: false, error: "Anda tidak memiliki izin" }
+      return { success: false, error: "You do not have permission" }
     }
 
     const shipment = await prisma.shipment.findUnique({ where: { id: shipmentId } })
-    if (!shipment) return { success: false, error: "Shipment tidak ditemukan" }
+    if (!shipment) return { success: false, error: "Shipment not found" }
 
     const transition = validateStatusTransition("SHIP", shipment.status, "DELIVERED")
     if (!transition.valid) return { success: false, error: transition.error! }
@@ -447,6 +450,6 @@ export async function deliverShipment(shipmentId: string): Promise<ActionResult>
     revalidatePath(`/shipments/${shipmentId}`)
     return { success: true, data: undefined, message: "Shipment ditandai terkirim" }
   } catch (error) {
-    return { success: false, error: "Terjadi kesalahan sistem" }
+    return { success: false, error: "A system error occurred" }
   }
 }

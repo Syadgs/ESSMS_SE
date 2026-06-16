@@ -72,7 +72,7 @@ export function POForm({ suppliers, itemOptions }: POFormProps) {
           <Label>Supplier *</Label>
           <Select value={supplierId} onValueChange={setSupplierId} required>
             <SelectTrigger>
-              <SelectValue placeholder="Pilih supplier" />
+              <SelectValue placeholder="Select supplier" />
             </SelectTrigger>
             <SelectContent>
               {suppliers.map((s) => (
@@ -84,7 +84,7 @@ export function POForm({ suppliers, itemOptions }: POFormProps) {
           </Select>
         </div>
         <div className="space-y-2">
-          <Label>Tanggal Diharapkan</Label>
+          <Label>Date Diharapkan</Label>
           <Input
             type="date"
             value={expectedDate}
@@ -94,7 +94,7 @@ export function POForm({ suppliers, itemOptions }: POFormProps) {
       </div>
 
       <div className="space-y-2">
-        <Label>Catatan</Label>
+        <Label>Notes</Label>
         <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} />
       </div>
 
@@ -111,10 +111,10 @@ export function POForm({ suppliers, itemOptions }: POFormProps) {
 
       <div className="flex gap-2">
         <Button type="button" variant="outline" onClick={() => router.back()}>
-          Batal
+          Cancel
         </Button>
         <Button type="submit" disabled={isPending}>
-          {isPending ? "Menyimpan..." : "Simpan Purchase Order"}
+          {isPending ? "Saving..." : "Save Purchase Order"}
         </Button>
       </div>
     </form>

@@ -25,12 +25,12 @@ export default async function TransfersPage() {
       <Breadcrumb
         items={[
           { label: "Inventori" },
-          { label: "Transfer Stok" },
+          { label: "Stock Transfers" },
         ]}
       />
       <PageHeader
-        title="Transfer Stok"
-        description="Kelola perpindahan stok antar gudang"
+        title="Stock Transfers"
+        description="Manage stock transfers between warehouses"
       >
         <Button asChild>
           <Link href="/inventory/transfers/new">

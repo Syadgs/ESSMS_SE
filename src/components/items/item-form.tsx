@@ -21,22 +21,22 @@ import { createItem, updateItem } from "@/actions/item.actions"
 import type { ItemType } from "@prisma/client"
 
 const itemFormSchema = z.object({
-  itemCode: z.string().min(1, "Kode item wajib diisi"),
-  itemName: z.string().min(1, "Nama item wajib diisi"),
+  itemCode: z.string().min(1, "Code item is required"),
+  itemName: z.string().min(1, "Nama item is required"),
   itemType: z.enum(["INVENTORY", "NON_INVENTORY", "SERVICE"]),
   description: z.string().optional(),
   unitPrice: z.coerce.number().min(0),
   costPrice: z.coerce.number().min(0),
-  unit: z.string().min(1, "Satuan wajib diisi"),
+  unit: z.string().min(1, "Unit is required"),
   category: z.string().optional(),
 })
 
 type ItemFormValues = z.infer<typeof itemFormSchema>
 
 const ITEM_TYPE_LABELS: Record<ItemType, string> = {
-  INVENTORY: "Persediaan",
-  NON_INVENTORY: "Non-Persediaan",
-  SERVICE: "Jasa",
+  INVENTORY: "Inventory",
+  NON_INVENTORY: "Non-Inventory",
+  SERVICE: "Service",
 }
 
 interface ItemFormProps {
@@ -84,7 +84,7 @@ export function ItemForm({ defaultValues, itemId }: ItemFormProps) {
 
     if (result.success) {
       toast.success(result.message)
-      router.push(isEdit ? `/items/${itemId}` : `/items/${result.data.id}`)
+      router.push(isEdit ? `/items/${itemId}` : `/items/${result.data?.id || ''}`)
       router.refresh()
     } else {
       toast.error(result.error)
@@ -97,7 +97,7 @@ export function ItemForm({ defaultValues, itemId }: ItemFormProps) {
         <CardContent className="pt-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <Label htmlFor="itemCode">Kode Item</Label>
+              <Label htmlFor="itemCode">Code Item</Label>
               <Input
                 id="itemCode"
                 {...register("itemCode")}
@@ -110,7 +110,7 @@ export function ItemForm({ defaultValues, itemId }: ItemFormProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="itemName">Nama Item</Label>
+              <Label htmlFor="itemName">Item Name</Label>
               <Input id="itemName" {...register("itemName")} placeholder="Nama item" />
               {errors.itemName && (
                 <p className="text-sm text-destructive">{errors.itemName.message}</p>
@@ -118,13 +118,13 @@ export function ItemForm({ defaultValues, itemId }: ItemFormProps) {
             </div>
 
             <div className="space-y-2">
-              <Label>Tipe Item</Label>
+              <Label>Type Item</Label>
               <Select
                 value={itemType}
                 onValueChange={(v) => setValue("itemType", v as ItemType)}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Pilih tipe" />
+                  <SelectValue placeholder="Select type" />
                 </SelectTrigger>
                 <SelectContent>
                   {(Object.keys(ITEM_TYPE_LABELS) as ItemType[]).map((type) => (
@@ -145,7 +145,7 @@ export function ItemForm({ defaultValues, itemId }: ItemFormProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="unitPrice">Harga Jual</Label>
+              <Label htmlFor="unitPrice">Unit Price</Label>
               <Input
                 id="unitPrice"
                 type="number"
@@ -158,7 +158,7 @@ export function ItemForm({ defaultValues, itemId }: ItemFormProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="costPrice">Harga Pokok</Label>
+              <Label htmlFor="costPrice">Cost Price</Label>
               <Input
                 id="costPrice"
                 type="number"
@@ -171,7 +171,7 @@ export function ItemForm({ defaultValues, itemId }: ItemFormProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="unit">Satuan</Label>
+              <Label htmlFor="unit">Unit</Label>
               <Input id="unit" {...register("unit")} placeholder="pcs" />
               {errors.unit && (
                 <p className="text-sm text-destructive">{errors.unit.message}</p>
@@ -183,7 +183,7 @@ export function ItemForm({ defaultValues, itemId }: ItemFormProps) {
               <Textarea
                 id="description"
                 {...register("description")}
-                placeholder="Deskripsi item (opsional)"
+                placeholder="Item description (optional)"
                 rows={3}
               />
             </div>
@@ -191,10 +191,10 @@ export function ItemForm({ defaultValues, itemId }: ItemFormProps) {
         </CardContent>
         <CardFooter className="flex justify-end gap-2 border-t pt-6">
           <Button type="button" variant="outline" onClick={() => router.back()}>
-            Batal
+            Cancel
           </Button>
           <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Menyimpan..." : isEdit ? "Simpan Perubahan" : "Buat Item"}
+            {isSubmitting ? "Saving..." : isEdit ? "Save Changes" : "Create Item"}
           </Button>
         </CardFooter>
       </Card>

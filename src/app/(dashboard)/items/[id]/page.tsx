@@ -10,9 +10,9 @@ import { formatCurrency, formatDate, decimalToNumber } from "@/lib/utils"
 import type { ItemType } from "@prisma/client"
 
 const ITEM_TYPE_LABELS: Record<ItemType, string> = {
-  INVENTORY: "Persediaan",
-  NON_INVENTORY: "Non-Persediaan",
-  SERVICE: "Jasa",
+  INVENTORY: "Inventory",
+  NON_INVENTORY: "Non-Inventory",
+  SERVICE: "Service",
 }
 
 interface ItemDetailPageProps {
@@ -47,30 +47,30 @@ export default async function ItemDetailPage({ params }: ItemDetailPageProps) {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Card className="lg:col-span-2">
           <CardHeader>
-            <CardTitle>Informasi Item</CardTitle>
+            <CardTitle>Information Item</CardTitle>
           </CardHeader>
           <CardContent>
             <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
               <div>
-                <dt className="text-muted-foreground">Kode Item</dt>
+                <dt className="text-muted-foreground">Code Item</dt>
                 <dd className="mt-1">
                   <span className="doc-number">{item.itemCode}</span>
                 </dd>
               </div>
               <div>
-                <dt className="text-muted-foreground">Tipe</dt>
+                <dt className="text-muted-foreground">Type</dt>
                 <dd className="mt-1 font-medium">{ITEM_TYPE_LABELS[item.itemType]}</dd>
               </div>
               <div>
-                <dt className="text-muted-foreground">Harga Jual</dt>
+                <dt className="text-muted-foreground">Unit Price</dt>
                 <dd className="mt-1 font-medium">{formatCurrency(decimalToNumber(item.unitPrice))}</dd>
               </div>
               <div>
-                <dt className="text-muted-foreground">Harga Pokok</dt>
+                <dt className="text-muted-foreground">Cost Price</dt>
                 <dd className="mt-1 font-medium">{formatCurrency(decimalToNumber(item.costPrice))}</dd>
               </div>
               <div>
-                <dt className="text-muted-foreground">Satuan</dt>
+                <dt className="text-muted-foreground">Unit</dt>
                 <dd className="mt-1 font-medium">{item.unit}</dd>
               </div>
               <div>
@@ -82,7 +82,7 @@ export default async function ItemDetailPage({ params }: ItemDetailPageProps) {
                 <dd className="mt-1 font-medium">{item.description ?? "-"}</dd>
               </div>
               <div>
-                <dt className="text-muted-foreground">Dibuat</dt>
+                <dt className="text-muted-foreground">Created</dt>
                 <dd className="mt-1 font-medium">{formatDate(item.createdAt)}</dd>
               </div>
               <div>
@@ -101,7 +101,7 @@ export default async function ItemDetailPage({ params }: ItemDetailPageProps) {
             {item.itemType !== "INVENTORY" ? (
               <p className="text-sm text-muted-foreground">Item ini bukan tipe persediaan</p>
             ) : item.inventoryStocks.length === 0 ? (
-              <p className="text-sm text-muted-foreground">Belum ada stok tercatat</p>
+              <p className="text-sm text-muted-foreground">No stock on record</p>
             ) : (
               <div className="space-y-4">
                 <div className="rounded-md bg-navy-900/5 border border-navy-900/10 p-4">

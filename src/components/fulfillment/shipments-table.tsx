@@ -31,7 +31,7 @@ const columns: ColumnDef<ShipmentRow>[] = [
   { accessorKey: "carrier", header: "Kurir" },
   {
     accessorKey: "shipDate",
-    header: "Tanggal",
+    header: "Date",
     cell: ({ row }) => formatDate(row.original.shipDate),
   },
   {
@@ -47,8 +47,8 @@ export function ShipmentsTable({ data }: { data: ShipmentRow[] }) {
       columns={columns}
       data={data}
       searchKey="shipmentNumber"
-      searchPlaceholder="Cari nomor shipment..."
-      emptyTitle="Belum ada Shipment"
+      searchPlaceholder="Search shipment..."
+      emptyTitle="No Shipment"
     />
   )
 }

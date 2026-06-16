@@ -11,14 +11,19 @@ import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
 import type { Role } from "@prisma/client"
 
-export default async function SalesOrdersPage() {
+export default async function SalesOrdersPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string>>
+}) {
   const session = await auth()
   if (!session?.user) redirect("/login")
 
   const role = session.user.role as Role
   if (!hasPermission(role, "sales_orders", "view")) redirect("/dashboard")
 
-  const orders = await getSalesOrders()
+  const { status } = await searchParams
+  const orders = await getSalesOrders(status)
   const data = orders.map((so) => ({
     id: so.id,
     soNumber: so.soNumber,
@@ -31,12 +36,15 @@ export default async function SalesOrdersPage() {
   return (
     <>
       <Breadcrumb items={[{ label: "Sales Orders" }]} />
-      <PageHeader title="Sales Orders" description="Kelola pesanan penjualan">
+      <PageHeader
+        title={status ? `Sales Orders — ${status.replace(/_/g, " ")}` : "Sales Orders"}
+        description="Manage pesanan penjualan"
+      >
         {hasPermission(role, "sales_orders", "create") && (
           <Button asChild>
             <Link href="/sales-orders/new">
               <Plus className="h-4 w-4 mr-1" />
-              Buat SO
+              Create SO
             </Link>
           </Button>
         )}

@@ -50,7 +50,7 @@ export default async function ShipmentDetailPage({
             <StatusBadge status={shipment.status} />
           </div>
           <p className="text-sm text-muted-foreground mt-2">
-            Dikirim {formatDate(shipment.shipDate)} oleh {shipment.shippedBy.name}
+            Shipped {formatDate(shipment.shipDate)} by {shipment.shippedBy.name}
           </p>
         </div>
         <ShipmentActions
@@ -63,7 +63,7 @@ export default async function ShipmentDetailPage({
       <div className="grid gap-4 md:grid-cols-2 mb-6">
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Informasi Pengiriman</CardTitle>
+            <CardTitle className="text-base">Information Shipment</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2 text-sm">
             <p>
@@ -71,7 +71,7 @@ export default async function ShipmentDetailPage({
               <span className="doc-number">{shipment.salesOrder.soNumber}</span>
             </p>
             <p><span className="text-muted-foreground">Customer:</span> {shipment.salesOrder.customer.customerName}</p>
-            <p><span className="text-muted-foreground">Gudang:</span> {shipment.packOrder.pickOrder.warehouse.warehouseName}</p>
+            <p><span className="text-muted-foreground">Warehouses:</span> {shipment.packOrder.pickOrder.warehouse.warehouseName}</p>
             {shipment.carrier && (
               <p><span className="text-muted-foreground">Kurir:</span> {shipment.carrier}</p>
             )}
@@ -79,7 +79,7 @@ export default async function ShipmentDetailPage({
               <p><span className="text-muted-foreground">No. Resi:</span> <span className="font-mono">{shipment.trackingNumber}</span></p>
             )}
             {shipment.notes && (
-              <p><span className="text-muted-foreground">Catatan:</span> {shipment.notes}</p>
+              <p><span className="text-muted-foreground">Notes:</span> {shipment.notes}</p>
             )}
           </CardContent>
         </Card>
@@ -87,7 +87,7 @@ export default async function ShipmentDetailPage({
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Item Dikirim</CardTitle>
+          <CardTitle className="text-base">Item Shipped</CardTitle>
         </CardHeader>
         <CardContent>
           <LineItemsTable items={lineItems} />

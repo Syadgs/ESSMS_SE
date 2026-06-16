@@ -11,8 +11,8 @@ import type { ActionResult } from "@/types"
 import { decimalToNumber } from "@/lib/utils"
 
 const CreatePaymentSchema = z.object({
-  invoiceId: z.string().min(1, "Invoice wajib dipilih"),
-  amount: z.number().positive("Jumlah pembayaran harus > 0"),
+  invoiceId: z.string().min(1, "Invoice must be selected"),
+  amount: z.number().positive("Jumlah payment must be greater than 0"),
   paymentMethod: z.enum(["BANK_TRANSFER", "CASH", "CHECK"]),
   paymentDate: z.string().optional(),
   referenceNumber: z.string().optional(),
@@ -44,7 +44,7 @@ export async function createCustomerPayment(
     const session = await auth()
     if (!session?.user?.id) return { success: false, error: "Unauthorized" }
     if (!hasPermission(session.user.role as Role, "customer_payments", "create")) {
-      return { success: false, error: "Anda tidak memiliki izin" }
+      return { success: false, error: "You do not have permission" }
     }
 
     const validated = CreatePaymentSchema.safeParse(formData)
@@ -56,14 +56,16 @@ export async function createCustomerPayment(
       where: { id: validated.data.invoiceId },
       include: { salesOrder: true },
     })
-    if (!invoice) return { success: false, error: "Invoice tidak ditemukan" }
+    if (!invoice) return { success: false, error: "Invoice not found" }
 
     const remaining = decimalToNumber(invoice.totalAmount) - decimalToNumber(invoice.paidAmount)
     if (validated.data.amount > remaining) {
-      return { success: false, error: `Jumlah melebihi sisa tagihan (${remaining})` }
+      return { success: false, error: `Amount exceeds remaining balance (${remaining})` }
     }
 
     const paymentNumber = await generateDocNumber("CPAY")
+    const userId = session.user.id
+    if (!userId) return { success: false, error: "Unauthorized" }
 
     await prisma.$transaction(async (tx) => {
       await tx.customerPayment.create({
@@ -77,7 +79,7 @@ export async function createCustomerPayment(
             : new Date(),
           referenceNumber: validated.data.referenceNumber,
           notes: validated.data.notes,
-          receivedById: session.user!.id,
+          receivedById: userId,
         },
       })
 
@@ -106,10 +108,10 @@ export async function createCustomerPayment(
     return {
       success: true,
       data: { id: invoice.id },
-      message: `Pembayaran ${paymentNumber} berhasil dicatat`,
+      message: `Payment ${paymentNumber} recorded successfully`,
     }
   } catch (error) {
     console.error("createCustomerPayment error:", error)
-    return { success: false, error: "Terjadi kesalahan sistem" }
+    return { success: false, error: "A system error occurred" }
   }
 }

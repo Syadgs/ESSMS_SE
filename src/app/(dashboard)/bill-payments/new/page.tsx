@@ -23,10 +23,10 @@ export default async function NewBillPaymentPage() {
       <Breadcrumb
         items={[
           { label: "Bill Payments", href: "/bill-payments" },
-          { label: "Catat Baru" },
+          { label: "New Entry" },
         ]}
       />
-      <PageHeader title="Catat Pembayaran" description="Bayar vendor bill yang sudah disetujui" />
+      <PageHeader title="Record Payment" description="Pay approved vendor bills" />
       <Card>
         <CardContent className="pt-6">
           <BillPaymentForm

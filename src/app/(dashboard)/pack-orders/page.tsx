@@ -27,7 +27,7 @@ export default async function PackOrdersPage() {
   return (
     <>
       <Breadcrumb items={[{ label: "Pack Orders" }]} />
-      <PageHeader title="Pack Orders" description="Pengepakan barang untuk pengiriman" />
+      <PageHeader title="Pack Orders" description="Packing for shipment" />
       <PackOrdersTable data={data} />
     </>
   )

@@ -15,7 +15,7 @@ export type BillPaymentRow = {
 }
 
 const methodLabels: Record<string, string> = {
-  BANK_TRANSFER: "Transfer Bank",
+  BANK_TRANSFER: "Bank Transfer",
   CASH: "Tunai",
   CHECK: "Cek",
 }
@@ -23,7 +23,7 @@ const methodLabels: Record<string, string> = {
 const columns: ColumnDef<BillPaymentRow>[] = [
   {
     accessorKey: "paymentNumber",
-    header: "No. Pembayaran",
+    header: "Payment No.",
     cell: ({ row }) => (
       <span className="doc-number">{row.original.paymentNumber}</span>
     ),
@@ -39,12 +39,12 @@ const columns: ColumnDef<BillPaymentRow>[] = [
   },
   {
     accessorKey: "paymentMethod",
-    header: "Metode",
+    header: "Method",
     cell: ({ row }) => methodLabels[row.original.paymentMethod] ?? row.original.paymentMethod,
   },
   {
     accessorKey: "paymentDate",
-    header: "Tanggal",
+    header: "Date",
     cell: ({ row }) => formatDate(row.original.paymentDate),
   },
 ]
@@ -55,9 +55,9 @@ export function BillPaymentsTable({ data }: { data: BillPaymentRow[] }) {
       columns={columns}
       data={data}
       searchKey="paymentNumber"
-      searchPlaceholder="Cari nomor pembayaran..."
-      emptyTitle="Belum ada pembayaran"
-      emptyDescription="Catat pembayaran vendor bill"
+      searchPlaceholder="Search payment..."
+      emptyTitle="No payment"
+      emptyDescription="Record vendor bill payments"
     />
   )
 }

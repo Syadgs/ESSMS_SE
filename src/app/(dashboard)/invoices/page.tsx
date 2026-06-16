@@ -11,14 +11,19 @@ import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
 import type { Role } from "@prisma/client"
 
-export default async function InvoicesPage() {
+export default async function InvoicesPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string>>
+}) {
   const session = await auth()
   if (!session?.user) redirect("/login")
 
   const role = session.user.role as Role
   if (!hasPermission(role, "invoices", "view")) redirect("/dashboard")
 
-  const invoices = await getInvoices()
+  const { status } = await searchParams
+  const invoices = await getInvoices(status)
   const data = invoices.map((inv) => ({
     id: inv.id,
     invoiceNumber: inv.invoiceNumber,
@@ -33,12 +38,15 @@ export default async function InvoicesPage() {
   return (
     <>
       <Breadcrumb items={[{ label: "Invoices" }]} />
-      <PageHeader title="Invoices" description="Tagihan penjualan ke customer">
+      <PageHeader
+        title={status ? `Invoices — ${status.replace(/_/g, " ")}` : "Invoices"}
+        description="Sales invoices to customers"
+      >
         {hasPermission(role, "invoices", "create") && (
           <Button asChild>
             <Link href="/invoices/new">
               <Plus className="h-4 w-4 mr-1" />
-              Buat Invoice
+              Create Invoice
             </Link>
           </Button>
         )}

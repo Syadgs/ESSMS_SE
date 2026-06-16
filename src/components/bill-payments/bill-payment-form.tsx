@@ -70,12 +70,12 @@ export function BillPaymentForm({ bills }: BillPaymentFormProps) {
         <Label>Vendor Bill *</Label>
         <Select value={billId} onValueChange={handleBillChange} required>
           <SelectTrigger>
-            <SelectValue placeholder="Pilih bill" />
+            <SelectValue placeholder="Select bill" />
           </SelectTrigger>
           <SelectContent>
             {bills.map((b) => (
               <SelectItem key={b.value} value={b.value}>
-                {b.label} — Sisa: {formatCurrency(b.remaining)}
+                {b.label} — Remaining: {formatCurrency(b.remaining)}
               </SelectItem>
             ))}
           </SelectContent>
@@ -84,7 +84,7 @@ export function BillPaymentForm({ bills }: BillPaymentFormProps) {
 
       {selected && (
         <p className="text-sm text-muted-foreground">
-          Sisa tagihan: <span className="font-mono font-medium">{formatCurrency(selected.remaining)}</span>
+          Sisa bill: <span className="font-mono font-medium">{formatCurrency(selected.remaining)}</span>
         </p>
       )}
 
@@ -100,7 +100,7 @@ export function BillPaymentForm({ bills }: BillPaymentFormProps) {
           />
         </div>
         <div className="space-y-2">
-          <Label>Metode Pembayaran *</Label>
+          <Label>Method Payment *</Label>
           <Select
             value={paymentMethod}
             onValueChange={(v) => setPaymentMethod(v as typeof paymentMethod)}
@@ -109,7 +109,7 @@ export function BillPaymentForm({ bills }: BillPaymentFormProps) {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="BANK_TRANSFER">Transfer Bank</SelectItem>
+              <SelectItem value="BANK_TRANSFER">Bank Transfer</SelectItem>
               <SelectItem value="CASH">Tunai</SelectItem>
               <SelectItem value="CHECK">Cek</SelectItem>
             </SelectContent>
@@ -119,7 +119,7 @@ export function BillPaymentForm({ bills }: BillPaymentFormProps) {
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
-          <Label>Tanggal Pembayaran</Label>
+          <Label>Date Payment</Label>
           <Input type="date" value={paymentDate} onChange={(e) => setPaymentDate(e.target.value)} />
         </div>
         <div className="space-y-2">
@@ -129,16 +129,16 @@ export function BillPaymentForm({ bills }: BillPaymentFormProps) {
       </div>
 
       <div className="space-y-2">
-        <Label>Catatan</Label>
+        <Label>Notes</Label>
         <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} />
       </div>
 
       <div className="flex gap-2">
         <Button type="button" variant="outline" onClick={() => router.back()}>
-          Batal
+          Cancel
         </Button>
         <Button type="submit" disabled={isPending || !billId}>
-          {isPending ? "Menyimpan..." : "Catat Pembayaran"}
+          {isPending ? "Saving..." : "Record Payment"}
         </Button>
       </div>
     </form>

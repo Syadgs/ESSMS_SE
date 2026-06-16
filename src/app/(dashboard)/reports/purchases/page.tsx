@@ -27,7 +27,7 @@ const columns: ColumnDef<PORow>[] = [
     ),
   },
   { accessorKey: "supplierName", header: "Supplier" },
-  { accessorKey: "orderDate", header: "Tanggal Order" },
+  { accessorKey: "orderDate", header: "Date Order" },
   {
     accessorKey: "totalAmount",
     header: "Total",
@@ -71,7 +71,7 @@ export default async function PurchasesReportPage() {
   return (
     <div>
       <PageHeader
-        title="Laporan Pembelian"
+        title="Purchase Report"
         description={`${data.length} purchase order · Total: ${formatCurrency(totalPurchases)}`}
       />
       <DataTable
@@ -79,7 +79,7 @@ export default async function PurchasesReportPage() {
         data={data}
         searchKey="supplierName"
         searchPlaceholder="Cari supplier..."
-        emptyDescription="Belum ada data purchase order"
+        emptyDescription="No purchase order data yet"
       />
     </div>
   )

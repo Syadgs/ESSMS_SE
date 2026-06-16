@@ -28,10 +28,10 @@ const columns: ColumnDef<GRRow>[] = [
   },
   { accessorKey: "poNumber", header: "No. PO" },
   { accessorKey: "supplierName", header: "Supplier" },
-  { accessorKey: "warehouseName", header: "Gudang" },
+  { accessorKey: "warehouseName", header: "Warehouses" },
   {
     accessorKey: "receivedDate",
-    header: "Tanggal",
+    header: "Date",
     cell: ({ row }) => formatDate(row.original.receivedDate),
   },
   {
@@ -47,8 +47,8 @@ export function GRTable({ data }: { data: GRRow[] }) {
       columns={columns}
       data={data}
       searchKey="grNumber"
-      searchPlaceholder="Cari nomor GR..."
-      emptyTitle="Belum ada Goods Receipt"
+      searchPlaceholder="Search GR..."
+      emptyTitle="No Goods Receipt"
     />
   )
 }

@@ -38,9 +38,9 @@ export function DataTable<TData, TValue>({
   columns,
   data,
   searchKey,
-  searchPlaceholder = "Cari...",
+  searchPlaceholder = "Search...",
   isLoading = false,
-  emptyTitle = "Tidak ada data",
+  emptyTitle = "No data",
   emptyDescription,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([])
@@ -82,7 +82,7 @@ export function DataTable<TData, TValue>({
         </div>
       )}
 
-      <div className="rounded-md border">
+      <div className="table-scroll rounded-xl border bg-white shadow-sm">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -120,9 +120,9 @@ export function DataTable<TData, TValue>({
       </div>
 
       {table.getPageCount() > 1 && (
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm text-muted-foreground">
-            Halaman {table.getState().pagination.pageIndex + 1} dari {table.getPageCount()}
+            Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
           </p>
           <div className="flex gap-2">
             <Button

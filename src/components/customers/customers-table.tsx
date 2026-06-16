@@ -20,7 +20,7 @@ export type CustomerRow = {
 const columns: ColumnDef<CustomerRow>[] = [
   {
     accessorKey: "customerCode",
-    header: "Kode Pelanggan",
+    header: "Code Customers",
     cell: ({ row }) => (
       <Link href={`/customers/${row.original.id}`} className="doc-number hover:underline">
         {row.original.customerCode}
@@ -29,11 +29,11 @@ const columns: ColumnDef<CustomerRow>[] = [
   },
   {
     accessorKey: "customerName",
-    header: "Nama Pelanggan",
+    header: "Nama Customers",
   },
   {
     accessorKey: "contactPerson",
-    header: "Kontak",
+    header: "Contact",
     cell: ({ row }) => row.original.contactPerson ?? "-",
   },
   {
@@ -74,9 +74,9 @@ export function CustomersTable({ data }: CustomersTableProps) {
       columns={columns}
       data={data}
       searchKey="customerName"
-      searchPlaceholder="Cari nama pelanggan..."
-      emptyTitle="Belum ada pelanggan"
-      emptyDescription="Mulai dengan menambahkan pelanggan baru"
+      searchPlaceholder="Search customer..."
+      emptyTitle="No customer"
+      emptyDescription="Start by adding customer"
     />
   )
 }

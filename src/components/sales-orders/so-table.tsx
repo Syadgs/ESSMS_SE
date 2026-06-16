@@ -28,7 +28,7 @@ const columns: ColumnDef<SORow>[] = [
   { accessorKey: "customerName", header: "Customer" },
   {
     accessorKey: "orderDate",
-    header: "Tanggal",
+    header: "Date",
     cell: ({ row }) => formatDate(row.original.orderDate),
   },
   {
@@ -51,9 +51,9 @@ export function SOTable({ data }: { data: SORow[] }) {
       columns={columns}
       data={data}
       searchKey="soNumber"
-      searchPlaceholder="Cari nomor SO..."
-      emptyTitle="Belum ada Sales Order"
-      emptyDescription="Buat sales order pertama Anda"
+      searchPlaceholder="Search SO..."
+      emptyTitle="No Sales Order"
+      emptyDescription="Create sales order yet"
     />
   )
 }

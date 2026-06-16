@@ -52,7 +52,7 @@ export default async function SalesOrderDetailPage({
             <StatusBadge status={so.status} />
           </div>
           <p className="text-sm text-muted-foreground mt-2">
-            Dibuat {formatDate(so.orderDate)} oleh {so.createdBy.name}
+            Created {formatDate(so.orderDate)} by {so.createdBy.name}
           </p>
         </div>
         <SOActions
@@ -73,43 +73,43 @@ export default async function SalesOrderDetailPage({
       <div className="grid gap-4 md:grid-cols-2 mb-6">
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Informasi Customer</CardTitle>
+            <CardTitle className="text-base">Information Customer</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2 text-sm">
             <p><span className="text-muted-foreground">Nama:</span> {so.customer.customerName}</p>
             <p><span className="text-muted-foreground">Kode:</span> {so.customer.customerCode}</p>
             {so.customer.contactPerson && (
-              <p><span className="text-muted-foreground">Kontak:</span> {so.customer.contactPerson}</p>
+              <p><span className="text-muted-foreground">Contact:</span> {so.customer.contactPerson}</p>
             )}
           </CardContent>
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Informasi Dokumen</CardTitle>
+            <CardTitle className="text-base">Information Dokumen</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2 text-sm">
             <p>
-              <span className="text-muted-foreground">Tanggal Order:</span>{" "}
+              <span className="text-muted-foreground">Date Order:</span>{" "}
               {formatDate(so.orderDate)}
             </p>
             {so.deliveryDate && (
               <p>
-                <span className="text-muted-foreground">Tanggal Kirim:</span>{" "}
+                <span className="text-muted-foreground">Date Kirim:</span>{" "}
                 {formatDate(so.deliveryDate)}
               </p>
             )}
             {so.approvedBy && (
               <p>
-                <span className="text-muted-foreground">Disetujui oleh:</span> {so.approvedBy.name}
+                <span className="text-muted-foreground">Approved oleh:</span> {so.approvedBy.name}
               </p>
             )}
             {so.rejectionReason && (
               <p className="text-destructive">
-                <span className="text-muted-foreground">Alasan Tolak:</span> {so.rejectionReason}
+                <span className="text-muted-foreground">Reason Rejection:</span> {so.rejectionReason}
               </p>
             )}
             {so.notes && (
-              <p><span className="text-muted-foreground">Catatan:</span> {so.notes}</p>
+              <p><span className="text-muted-foreground">Notes:</span> {so.notes}</p>
             )}
           </CardContent>
         </Card>

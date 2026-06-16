@@ -4,12 +4,12 @@ import "./globals.css"
 
 export const metadata: Metadata = {
   title: "ESSMS - Enterprise Supply Chain & Sales Management",
-  description: "Sistem manajemen supply chain dan penjualan enterprise",
+  description: "Enterprise supply chain and sales management system",
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="id">
+    <html lang="en">
       <body>
         {children}
         <Toaster position="top-right" richColors closeButton />

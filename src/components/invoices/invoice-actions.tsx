@@ -12,5 +12,5 @@ interface InvoiceActionsProps {
 export function InvoiceActions({ invoiceId, status, canCreate }: InvoiceActionsProps) {
   if (!canCreate || status !== "DRAFT") return null
 
-  return <ActionButton label="Kirim Invoice" action={() => sendInvoice(invoiceId)} />
+  return <ActionButton label="Send Invoice" action={() => sendInvoice(invoiceId)} />
 }

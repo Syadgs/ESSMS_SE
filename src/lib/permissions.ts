@@ -83,6 +83,9 @@ export const PERMISSIONS = {
       Role.ADMIN,
     ],
   },
+  admin: {
+    manage: [Role.ADMIN],
+  },
 } as const
 
 export function hasPermission(
@@ -90,6 +93,6 @@ export function hasPermission(
   resource: keyof typeof PERMISSIONS,
   action: string
 ): boolean {
-  const resourcePerms = PERMISSIONS[resource] as Record<string, Role[]>
+  const resourcePerms = PERMISSIONS[resource] as unknown as Record<string, readonly Role[]>
   return resourcePerms[action]?.includes(userRole) ?? false
 }

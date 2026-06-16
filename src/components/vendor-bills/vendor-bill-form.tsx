@@ -16,7 +16,10 @@ import {
 import { createVendorBill } from "@/actions/vendor-bill.actions"
 import type { SelectOption } from "@/types"
 
-type POOption = SelectOption & { grOptions?: SelectOption[] }
+type POOption = SelectOption & { 
+  grOptions?: SelectOption[]
+  items?: { itemId?: string, poItemId?: string, quantity: number, unitPrice: number, description?: string }[]
+}
 
 interface VendorBillFormProps {
   purchaseOrders: POOption[]
@@ -35,9 +38,11 @@ export function VendorBillForm({ purchaseOrders }: VendorBillFormProps) {
     e.preventDefault()
     startTransition(async () => {
       const result = await createVendorBill({
+        billType: "PO_BASED",
         poId,
         grId: grId || undefined,
         dueDate,
+        lineItems: selectedPO?.items || [],
       })
       if (result.success) {
         toast.success(result.message)
@@ -61,7 +66,7 @@ export function VendorBillForm({ purchaseOrders }: VendorBillFormProps) {
           required
         >
           <SelectTrigger>
-            <SelectValue placeholder="Pilih PO" />
+            <SelectValue placeholder="Select PO" />
           </SelectTrigger>
           <SelectContent>
             {purchaseOrders.map((po) => (
@@ -78,7 +83,7 @@ export function VendorBillForm({ purchaseOrders }: VendorBillFormProps) {
           <Label>Goods Receipt (opsional)</Label>
           <Select value={grId} onValueChange={setGrId}>
             <SelectTrigger>
-              <SelectValue placeholder="Pilih GR" />
+              <SelectValue placeholder="Select GR" />
             </SelectTrigger>
             <SelectContent>
               {selectedPO.grOptions.map((gr) => (
@@ -92,16 +97,16 @@ export function VendorBillForm({ purchaseOrders }: VendorBillFormProps) {
       )}
 
       <div className="space-y-2">
-        <Label>Jatuh Tempo *</Label>
+        <Label>Overdue *</Label>
         <Input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} required />
       </div>
 
       <div className="flex gap-2">
         <Button type="button" variant="outline" onClick={() => router.back()}>
-          Batal
+          Cancel
         </Button>
         <Button type="submit" disabled={isPending}>
-          {isPending ? "Menyimpan..." : "Buat Vendor Bill"}
+          {isPending ? "Saving..." : "Create Vendor Bill"}
         </Button>
       </div>
     </form>

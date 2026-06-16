@@ -6,14 +6,13 @@ import { revalidatePath } from "next/cache"
 import { z } from "zod"
 import { generateDocNumber } from "@/lib/generate-number"
 import { hasPermission } from "@/lib/permissions"
-import { validateStatusTransition } from "@/lib/status-transitions"
 import { Role } from "@prisma/client"
 import type { ActionResult } from "@/types"
 import { decimalToNumber } from "@/lib/utils"
 
 const CreatePaymentSchema = z.object({
-  billId: z.string().min(1, "Bill wajib dipilih"),
-  amount: z.number().positive("Jumlah pembayaran harus > 0"),
+  billId: z.string().min(1, "Bill must be selected"),
+  amount: z.number().positive("Jumlah payment must be greater than 0"),
   paymentMethod: z.enum(["BANK_TRANSFER", "CASH", "CHECK"]),
   paymentDate: z.string().optional(),
   referenceNumber: z.string().optional(),
@@ -32,7 +31,7 @@ export async function getBillPayments() {
 
 export async function getApprovedBillsForPayment() {
   return prisma.vendorBill.findMany({
-    where: { status: "APPROVED" },
+    where: { status: { in: ["APPROVED", "PARTIALLY_PAID"] } },
     include: { supplier: true },
     orderBy: { dueDate: "asc" },
   })
@@ -45,7 +44,7 @@ export async function createBillPayment(
     const session = await auth()
     if (!session?.user?.id) return { success: false, error: "Unauthorized" }
     if (!hasPermission(session.user.role as Role, "vendor_bills", "pay")) {
-      return { success: false, error: "Anda tidak memiliki izin" }
+      return { success: false, error: "You do not have permission" }
     }
 
     const validated = CreatePaymentSchema.safeParse(formData)
@@ -54,17 +53,19 @@ export async function createBillPayment(
     }
 
     const bill = await prisma.vendorBill.findUnique({ where: { id: validated.data.billId } })
-    if (!bill) return { success: false, error: "Vendor Bill tidak ditemukan" }
-    if (bill.status !== "APPROVED") {
-      return { success: false, error: "Hanya bill berstatus APPROVED yang dapat dibayar" }
+    if (!bill) return { success: false, error: "Vendor Bill not found" }
+    if (!["APPROVED", "PARTIALLY_PAID"].includes(bill.status)) {
+      return { success: false, error: "Only bills with APPROVED or PARTIALLY_PAID status can be paid" }
     }
 
     const remaining = decimalToNumber(bill.totalAmount) - decimalToNumber(bill.paidAmount)
-    if (validated.data.amount > remaining) {
-      return { success: false, error: `Jumlah melebihi sisa tagihan (${remaining})` }
+    if (validated.data.amount > remaining + 0.01) {
+      return { success: false, error: `Amount exceeds remaining balance (${remaining.toLocaleString("id-ID")})` }
     }
 
     const paymentNumber = await generateDocNumber("PAY")
+    const userId = session.user.id
+    if (!userId) return { success: false, error: "Unauthorized" }
 
     await prisma.$transaction(async (tx) => {
       await tx.billPayment.create({
@@ -78,22 +79,26 @@ export async function createBillPayment(
             : new Date(),
           referenceNumber: validated.data.referenceNumber,
           notes: validated.data.notes,
-          paidById: session.user!.id,
+          paidById: userId,
         },
       })
 
       const newPaidAmount = decimalToNumber(bill.paidAmount) + validated.data.amount
-      const isFullyPaid = newPaidAmount >= decimalToNumber(bill.totalAmount)
+      const isFullyPaid = newPaidAmount >= decimalToNumber(bill.totalAmount) - 0.01
+
+      // Determine new bill status
+      const newBillStatus = isFullyPaid ? "PAID" : "PARTIALLY_PAID"
 
       await tx.vendorBill.update({
         where: { id: bill.id },
         data: {
           paidAmount: newPaidAmount,
-          status: isFullyPaid ? "PAID" : "APPROVED",
+          status: newBillStatus,
         },
       })
 
-      if (isFullyPaid) {
+      // Only update PO status for PO-based bills when fully paid
+      if (isFullyPaid && bill.poId) {
         await tx.purchaseOrder.update({
           where: { id: bill.poId },
           data: { status: "PAID" },
@@ -103,13 +108,14 @@ export async function createBillPayment(
 
     revalidatePath("/bill-payments")
     revalidatePath(`/vendor-bills/${bill.id}`)
+    revalidatePath("/vendor-bills")
     return {
       success: true,
       data: { id: bill.id },
-      message: `Pembayaran ${paymentNumber} berhasil dicatat`,
+      message: `Payment ${paymentNumber} recorded successfully`,
     }
   } catch (error) {
     console.error("createBillPayment error:", error)
-    return { success: false, error: "Terjadi kesalahan sistem" }
+    return { success: false, error: "A system error occurred" }
   }
 }

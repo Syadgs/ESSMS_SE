@@ -36,11 +36,11 @@ const columns: ColumnDef<TransferRow>[] = [
   },
   {
     accessorKey: "fromWarehouseName",
-    header: "Dari Gudang",
+    header: "From Warehouse",
   },
   {
     accessorKey: "toWarehouseName",
-    header: "Ke Gudang",
+    header: "To Warehouse",
   },
   {
     accessorKey: "quantity",
@@ -53,7 +53,7 @@ const columns: ColumnDef<TransferRow>[] = [
   },
   {
     accessorKey: "createdAt",
-    header: "Tanggal",
+    header: "Date",
     cell: ({ row }) => formatDate(row.original.createdAt),
   },
   {
@@ -79,9 +79,9 @@ export function TransfersTable({ data }: TransfersTableProps) {
       columns={columns}
       data={data}
       searchKey="transferNumber"
-      searchPlaceholder="Cari nomor transfer..."
-      emptyTitle="Belum ada transfer stok"
-      emptyDescription="Buat transfer stok baru untuk memulai"
+      searchPlaceholder="Search transfer..."
+      emptyTitle="No stock transfer"
+      emptyDescription="Create stock transfer "
     />
   )
 }

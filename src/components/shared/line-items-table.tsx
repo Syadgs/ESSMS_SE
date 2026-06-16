@@ -32,7 +32,7 @@ export function LineItemsTable({ items, showDiscount = false, extraColumn }: Lin
         <TableHeader>
           <TableRow>
             <TableHead>Kode</TableHead>
-            <TableHead>Nama Item</TableHead>
+            <TableHead>Item Name</TableHead>
             <TableHead className="text-right">Qty</TableHead>
             <TableHead className="text-right">Harga</TableHead>
             {showDiscount && <TableHead className="text-right">Diskon</TableHead>}

@@ -36,17 +36,17 @@ export function POActions({ poId, status, canConfirm }: POActionsProps) {
 
   return (
     <div className="flex gap-2">
-      <ActionButton label="Konfirmasi PO" action={() => confirmPurchaseOrder(poId)} />
+      <ActionButton label="Confirm PO" action={() => confirmPurchaseOrder(poId)} />
       <Button variant="destructive" onClick={() => setShowCancel(true)}>
-        Batalkan
+        Cancelkan
       </Button>
       <ConfirmDialog
         open={showCancel}
         onOpenChange={setShowCancel}
-        title="Batalkan Purchase Order"
-        description="Apakah Anda yakin ingin membatalkan PO ini?"
+        title="Cancelkan Purchase Order"
+        description="Are you sure you want to cancel this PO?"
         variant="danger"
-        confirmLabel="Ya, Batalkan"
+        confirmLabel="Ya, Cancelkan"
         loading={isPending}
         onConfirm={handleCancel}
       />

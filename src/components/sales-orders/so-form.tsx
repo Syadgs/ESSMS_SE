@@ -72,7 +72,7 @@ export function SOForm({ customers, itemOptions }: SOFormProps) {
           <Label>Customer *</Label>
           <Select value={customerId} onValueChange={setCustomerId} required>
             <SelectTrigger>
-              <SelectValue placeholder="Pilih customer" />
+              <SelectValue placeholder="Select customer" />
             </SelectTrigger>
             <SelectContent>
               {customers.map((c) => (
@@ -84,7 +84,7 @@ export function SOForm({ customers, itemOptions }: SOFormProps) {
           </Select>
         </div>
         <div className="space-y-2">
-          <Label>Tanggal Pengiriman</Label>
+          <Label>Date Shipment</Label>
           <Input
             type="date"
             value={deliveryDate}
@@ -94,7 +94,7 @@ export function SOForm({ customers, itemOptions }: SOFormProps) {
       </div>
 
       <div className="space-y-2">
-        <Label>Catatan</Label>
+        <Label>Notes</Label>
         <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} />
       </div>
 
@@ -112,10 +112,10 @@ export function SOForm({ customers, itemOptions }: SOFormProps) {
 
       <div className="flex gap-2">
         <Button type="button" variant="outline" onClick={() => router.back()}>
-          Batal
+          Cancel
         </Button>
         <Button type="submit" disabled={isPending}>
-          {isPending ? "Menyimpan..." : "Simpan Sales Order"}
+          {isPending ? "Saving..." : "Save Sales Order"}
         </Button>
       </div>
     </form>

@@ -26,10 +26,10 @@ const columns: ColumnDef<PickOrderRow>[] = [
     ),
   },
   { accessorKey: "customerName", header: "Customer" },
-  { accessorKey: "warehouseName", header: "Gudang" },
+  { accessorKey: "warehouseName", header: "Warehouses" },
   {
     accessorKey: "pickDate",
-    header: "Tanggal",
+    header: "Date",
     cell: ({ row }) => formatDate(row.original.pickDate),
   },
   {
@@ -45,8 +45,8 @@ export function PickOrdersTable({ data }: { data: PickOrderRow[] }) {
       columns={columns}
       data={data}
       searchKey="soNumber"
-      searchPlaceholder="Cari nomor SO..."
-      emptyTitle="Belum ada Pick Order"
+      searchPlaceholder="Search SO..."
+      emptyTitle="No Pick Order"
     />
   )
 }

@@ -50,7 +50,7 @@ export default async function PickOrderDetailPage({
             <StatusBadge status={pick.status} />
           </div>
           <p className="text-sm text-muted-foreground mt-2">
-            Pick {formatDate(pick.pickDate)} oleh {pick.pickedBy.name}
+            Pick {formatDate(pick.pickDate)} by {pick.pickedBy.name}
           </p>
         </div>
         <PickActions
@@ -64,13 +64,13 @@ export default async function PickOrderDetailPage({
       <div className="grid gap-4 md:grid-cols-2 mb-6">
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Informasi</CardTitle>
+            <CardTitle className="text-base">Information</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2 text-sm">
             <p><span className="text-muted-foreground">Customer:</span> {pick.salesOrder.customer.customerName}</p>
-            <p><span className="text-muted-foreground">Gudang:</span> {pick.warehouse.warehouseName}</p>
+            <p><span className="text-muted-foreground">Warehouses:</span> {pick.warehouse.warehouseName}</p>
             {pick.notes && (
-              <p><span className="text-muted-foreground">Catatan:</span> {pick.notes}</p>
+              <p><span className="text-muted-foreground">Notes:</span> {pick.notes}</p>
             )}
           </CardContent>
         </Card>
@@ -78,7 +78,7 @@ export default async function PickOrderDetailPage({
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Item untuk Di-pick</CardTitle>
+          <CardTitle className="text-base">Items to Pick</CardTitle>
         </CardHeader>
         <CardContent>
           <LineItemsTable items={lineItems} />

@@ -15,11 +15,11 @@ export function ShipmentActions({ shipmentId, status, canManage }: ShipmentActio
   return (
     <div className="flex gap-2 flex-wrap">
       {status === "DRAFT" && (
-        <ActionButton label="Konfirmasi Pengiriman" action={() => confirmShipment(shipmentId)} />
+        <ActionButton label="Confirm Shipment" action={() => confirmShipment(shipmentId)} />
       )}
       {status === "SHIPPED" && (
         <ActionButton
-          label="Tandai Terkirim"
+          label="Tandai Sent"
           action={() => deliverShipment(shipmentId)}
           variant="secondary"
         />

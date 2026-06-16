@@ -25,12 +25,12 @@ export default async function ItemsPage() {
       <Breadcrumb items={[{ label: "Master Item" }]} />
       <PageHeader
         title="Master Item"
-        description="Kelola data item, harga, dan informasi produk"
+        description="Manage items, pricing, and product info"
       >
         <Button asChild>
           <Link href="/items/new">
             <Plus className="h-4 w-4" />
-            Item Baru
+            New Item
           </Link>
         </Button>
       </PageHeader>

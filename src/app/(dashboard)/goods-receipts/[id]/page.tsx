@@ -49,7 +49,7 @@ export default async function GoodsReceiptDetailPage({
             <StatusBadge status={gr.status} />
           </div>
           <p className="text-sm text-muted-foreground mt-2">
-            Diterima {formatDate(gr.receivedDate)} oleh {gr.receivedBy.name}
+            Received {formatDate(gr.receivedDate)} by {gr.receivedBy.name}
           </p>
         </div>
         <GRActions
@@ -68,7 +68,7 @@ export default async function GoodsReceiptDetailPage({
       <div className="grid gap-4 md:grid-cols-2 mb-6">
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Informasi PO & Supplier</CardTitle>
+            <CardTitle className="text-base">Information PO & Supplier</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2 text-sm">
             <p>
@@ -83,19 +83,19 @@ export default async function GoodsReceiptDetailPage({
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Informasi Penerimaan</CardTitle>
+            <CardTitle className="text-base">Information Receipt</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2 text-sm">
             <p>
-              <span className="text-muted-foreground">Gudang:</span>{" "}
+              <span className="text-muted-foreground">Warehouses:</span>{" "}
               {gr.warehouse.warehouseName}
             </p>
             <p>
-              <span className="text-muted-foreground">Tanggal:</span>{" "}
+              <span className="text-muted-foreground">Date:</span>{" "}
               {formatDate(gr.receivedDate)}
             </p>
             {gr.notes && (
-              <p><span className="text-muted-foreground">Catatan:</span> {gr.notes}</p>
+              <p><span className="text-muted-foreground">Notes:</span> {gr.notes}</p>
             )}
           </CardContent>
         </Card>
@@ -103,7 +103,7 @@ export default async function GoodsReceiptDetailPage({
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Item Diterima</CardTitle>
+          <CardTitle className="text-base">Received Items</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
@@ -111,7 +111,7 @@ export default async function GoodsReceiptDetailPage({
               <TableRow>
                 <TableHead>Item</TableHead>
                 <TableHead className="text-right">Qty Order</TableHead>
-                <TableHead className="text-right">Qty Diterima</TableHead>
+                <TableHead className="text-right">Qty Received</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

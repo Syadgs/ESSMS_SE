@@ -21,18 +21,18 @@ export default async function TransferDetailPage({ params }: TransferDetailPageP
     <>
       <Breadcrumb
         items={[
-          { label: "Transfer Stok", href: "/inventory/transfers" },
+          { label: "Stock Transfers", href: "/inventory/transfers" },
           { label: transfer.transferNumber },
         ]}
       />
-      <PageHeader title="Detail Transfer Stok" description={`Nomor: ${transfer.transferNumber}`}>
+      <PageHeader title="Detail Stock Transfers" description={`Nomor: ${transfer.transferNumber}`}>
         {transfer.status === "DRAFT" && <TransferActions transferId={id} />}
       </PageHeader>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Card className="lg:col-span-2">
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>Informasi Transfer</CardTitle>
+            <CardTitle>Information Transfer</CardTitle>
             <StatusBadge status={transfer.status} />
           </CardHeader>
           <CardContent>
@@ -51,11 +51,11 @@ export default async function TransferDetailPage({ params }: TransferDetailPageP
                 </dd>
               </div>
               <div>
-                <dt className="text-muted-foreground">Gudang Asal</dt>
+                <dt className="text-muted-foreground">Warehouses Asal</dt>
                 <dd className="mt-1 font-medium">{transfer.fromWarehouse.warehouseName}</dd>
               </div>
               <div>
-                <dt className="text-muted-foreground">Gudang Tujuan</dt>
+                <dt className="text-muted-foreground">Warehouses Tujuan</dt>
                 <dd className="mt-1 font-medium">{transfer.toWarehouse.warehouseName}</dd>
               </div>
               <div>
@@ -69,7 +69,7 @@ export default async function TransferDetailPage({ params }: TransferDetailPageP
                 <dd className="mt-1 font-medium">{transfer.transferredBy.name}</dd>
               </div>
               <div>
-                <dt className="text-muted-foreground">Tanggal Dibuat</dt>
+                <dt className="text-muted-foreground">Date Created</dt>
                 <dd className="mt-1 font-medium">{formatDateTime(transfer.createdAt)}</dd>
               </div>
               <div>
@@ -78,7 +78,7 @@ export default async function TransferDetailPage({ params }: TransferDetailPageP
               </div>
               {transfer.notes && (
                 <div className="sm:col-span-2">
-                  <dt className="text-muted-foreground">Catatan</dt>
+                  <dt className="text-muted-foreground">Notes</dt>
                   <dd className="mt-1 font-medium">{transfer.notes}</dd>
                 </div>
               )}
@@ -88,7 +88,7 @@ export default async function TransferDetailPage({ params }: TransferDetailPageP
 
         <Card>
           <CardHeader>
-            <CardTitle>Ringkasan</CardTitle>
+            <CardTitle>Summary</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 text-sm">
             <div className="rounded-md bg-amber-50 border border-amber-200 p-4">
@@ -98,7 +98,7 @@ export default async function TransferDetailPage({ params }: TransferDetailPageP
               <p className="font-medium">{transfer.toWarehouse.warehouseName}</p>
             </div>
             <div className="rounded-md bg-navy-900/5 border border-navy-900/10 p-4">
-              <p className="text-muted-foreground">Kuantitas Transfer</p>
+              <p className="text-muted-foreground">Quantity Transfer</p>
               <p className="text-2xl font-serif text-navy-900 mt-1">
                 {transfer.quantity}{" "}
                 <span className="text-base font-sans text-muted-foreground">{transfer.item.unit}</span>

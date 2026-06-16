@@ -11,14 +11,19 @@ import { POTable } from "@/components/purchase-orders/po-table"
 import { Plus } from "lucide-react"
 import type { Role } from "@prisma/client"
 
-export default async function PurchaseOrdersPage() {
+export default async function PurchaseOrdersPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string>>
+}) {
   const session = await auth()
   if (!session?.user) redirect("/login")
 
   const role = session.user.role as Role
   if (!hasPermission(role, "purchase_orders", "view")) redirect("/dashboard")
 
-  const orders = await getPurchaseOrders()
+  const { status } = await searchParams
+  const orders = await getPurchaseOrders(status)
   const data = orders.map((po) => ({
     id: po.id,
     poNumber: po.poNumber,
@@ -33,12 +38,12 @@ export default async function PurchaseOrdersPage() {
   return (
     <>
       <Breadcrumb items={[{ label: "Purchase Orders" }]} />
-      <PageHeader title="Purchase Orders" description="Kelola pesanan pembelian ke supplier">
+      <PageHeader title={status ? `Purchase Orders — ${status.replace(/_/g, " ")}` : "Purchase Orders"} description="Manage purchase orders to suppliers">
         {canCreate && (
           <Button asChild>
             <Link href="/purchase-orders/new">
               <Plus className="h-4 w-4 mr-1" />
-              Buat PO
+              Create PO
             </Link>
           </Button>
         )}

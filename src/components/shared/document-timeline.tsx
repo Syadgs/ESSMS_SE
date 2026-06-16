@@ -96,40 +96,40 @@ export function DocumentTimeline({ steps, currentStatus, className }: DocumentTi
 
 export const PO_TIMELINE: TimelineStep[] = [
   { key: "DRAFT", label: "Draft" },
-  { key: "CONFIRMED", label: "Dikonfirmasi" },
-  { key: "PARTIALLY_RECEIVED", label: "Diterima" },
-  { key: "FULLY_RECEIVED", label: "Lengkap" },
-  { key: "BILLED", label: "Ditagih" },
-  { key: "PAID", label: "Lunas" },
+  { key: "CONFIRMED", label: "Confirmed" },
+  { key: "PARTIALLY_RECEIVED", label: "Partial Receipt" },
+  { key: "FULLY_RECEIVED", label: "Fully Received" },
+  { key: "BILLED", label: "Billed" },
+  { key: "PAID", label: "Paid" },
 ]
 
 export const SO_TIMELINE: TimelineStep[] = [
   { key: "DRAFT", label: "Draft" },
-  { key: "PENDING_APPROVAL", label: "Persetujuan" },
-  { key: "APPROVED", label: "Disetujui" },
-  { key: "PROCESSING", label: "Diproses" },
+  { key: "PENDING_APPROVAL", label: "Approval" },
+  { key: "APPROVED", label: "Approved" },
+  { key: "PROCESSING", label: "Processing" },
   { key: "PICKING", label: "Picking" },
   { key: "PACKING", label: "Packing" },
-  { key: "SHIPPED", label: "Dikirim" },
-  { key: "INVOICED", label: "Diinvoice" },
-  { key: "PAID", label: "Lunas" },
+  { key: "SHIPPED", label: "Shipped" },
+  { key: "INVOICED", label: "Invoiced" },
+  { key: "PAID", label: "Paid" },
 ]
 
 export const BILL_TIMELINE: TimelineStep[] = [
   { key: "DRAFT", label: "Draft" },
-  { key: "PENDING_APPROVAL", label: "Persetujuan" },
-  { key: "APPROVED", label: "Disetujui" },
-  { key: "PAID", label: "Lunas" },
+  { key: "PENDING_APPROVAL", label: "Approval" },
+  { key: "APPROVED", label: "Approved" },
+  { key: "PAID", label: "Paid" },
 ]
 
 export const GR_TIMELINE: TimelineStep[] = [
   { key: "DRAFT", label: "Draft" },
-  { key: "CONFIRMED", label: "Dikonfirmasi" },
+  { key: "CONFIRMED", label: "Confirmed" },
 ]
 
 export const INVOICE_TIMELINE: TimelineStep[] = [
   { key: "DRAFT", label: "Draft" },
-  { key: "SENT", label: "Dikirim" },
+  { key: "SENT", label: "Shipped" },
   { key: "PARTIALLY_PAID", label: "Sebagian" },
-  { key: "PAID", label: "Lunas" },
+  { key: "PAID", label: "Paid" },
 ]

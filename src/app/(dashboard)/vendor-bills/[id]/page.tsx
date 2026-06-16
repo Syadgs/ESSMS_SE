@@ -26,13 +26,13 @@ export default async function VendorBillDetailPage({
   const bill = await getVendorBillById(id)
   if (!bill) notFound()
 
-  const lineItems = bill.purchaseOrder.items.map((item) => ({
-    itemCode: item.item.itemCode,
-    itemName: item.item.itemName,
-    quantity: item.quantity,
+  const lineItems = bill.items.map((item) => ({
+    itemCode: item.item?.itemCode || "-",
+    itemName: item.item?.itemName || item.description || "-",
+    quantity: decimalToNumber(item.quantity),
     unitPrice: decimalToNumber(item.unitPrice),
     subtotal: decimalToNumber(item.subtotal),
-    unit: item.item.unit,
+    unit: item.item?.unit || "-",
   }))
 
   return (
@@ -51,7 +51,7 @@ export default async function VendorBillDetailPage({
             <StatusBadge status={bill.status} />
           </div>
           <p className="text-sm text-muted-foreground mt-2">
-            Dibuat {formatDate(bill.billDate)} oleh {bill.createdBy.name}
+            Created {formatDate(bill.billDate)} by {bill.createdBy.name}
           </p>
         </div>
         <BillActions
@@ -71,7 +71,7 @@ export default async function VendorBillDetailPage({
       <div className="grid gap-4 md:grid-cols-2 mb-6">
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Informasi Supplier</CardTitle>
+            <CardTitle className="text-base">Information Supplier</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2 text-sm">
             <p><span className="text-muted-foreground">Nama:</span> {bill.supplier.supplierName}</p>
@@ -80,15 +80,19 @@ export default async function VendorBillDetailPage({
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Informasi Dokumen</CardTitle>
+            <CardTitle className="text-base">Information Dokumen</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2 text-sm">
             <p>
               <span className="text-muted-foreground">No. PO:</span>{" "}
-              <span className="doc-number">{bill.purchaseOrder.poNumber}</span>
+              {bill.purchaseOrder ? (
+                <span className="doc-number">{bill.purchaseOrder.poNumber}</span>
+              ) : (
+                <span className="text-muted-foreground italic">Standalone</span>
+              )}
             </p>
             <p>
-              <span className="text-muted-foreground">Jatuh Tempo:</span>{" "}
+              <span className="text-muted-foreground">Overdue:</span>{" "}
               {formatDate(bill.dueDate)}
             </p>
             <p>
@@ -97,7 +101,7 @@ export default async function VendorBillDetailPage({
             </p>
             {bill.rejectionNote && (
               <p className="text-destructive">
-                <span className="text-muted-foreground">Alasan Tolak:</span> {bill.rejectionNote}
+                <span className="text-muted-foreground">Reason Rejection:</span> {bill.rejectionNote}
               </p>
             )}
           </CardContent>

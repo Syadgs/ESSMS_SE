@@ -18,7 +18,7 @@ export type SupplierRow = {
 const columns: ColumnDef<SupplierRow>[] = [
   {
     accessorKey: "supplierCode",
-    header: "Kode Supplier",
+    header: "Code Supplier",
     cell: ({ row }) => (
       <Link href={`/suppliers/${row.original.id}`} className="doc-number hover:underline">
         {row.original.supplierCode}
@@ -31,7 +31,7 @@ const columns: ColumnDef<SupplierRow>[] = [
   },
   {
     accessorKey: "contactPerson",
-    header: "Kontak",
+    header: "Contact",
     cell: ({ row }) => row.original.contactPerson ?? "-",
   },
   {
@@ -67,9 +67,9 @@ export function SuppliersTable({ data }: SuppliersTableProps) {
       columns={columns}
       data={data}
       searchKey="supplierName"
-      searchPlaceholder="Cari nama supplier..."
-      emptyTitle="Belum ada supplier"
-      emptyDescription="Mulai dengan menambahkan supplier baru"
+      searchPlaceholder="Search supplier..."
+      emptyTitle="No supplier"
+      emptyDescription="Start by adding supplier"
     />
   )
 }

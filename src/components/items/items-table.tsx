@@ -19,15 +19,15 @@ export type ItemRow = {
 }
 
 const ITEM_TYPE_LABELS: Record<ItemType, string> = {
-  INVENTORY: "Persediaan",
-  NON_INVENTORY: "Non-Persediaan",
-  SERVICE: "Jasa",
+  INVENTORY: "Inventory",
+  NON_INVENTORY: "Non-Inventory",
+  SERVICE: "Service",
 }
 
 const columns: ColumnDef<ItemRow>[] = [
   {
     accessorKey: "itemCode",
-    header: "Kode Item",
+    header: "Code Item",
     cell: ({ row }) => (
       <Link href={`/items/${row.original.id}`} className="doc-number hover:underline">
         {row.original.itemCode}
@@ -36,21 +36,21 @@ const columns: ColumnDef<ItemRow>[] = [
   },
   {
     accessorKey: "itemName",
-    header: "Nama Item",
+    header: "Item Name",
   },
   {
     accessorKey: "itemType",
-    header: "Tipe",
+    header: "Type",
     cell: ({ row }) => ITEM_TYPE_LABELS[row.original.itemType],
   },
   {
     accessorKey: "unitPrice",
-    header: "Harga Jual",
+    header: "Unit Price",
     cell: ({ row }) => formatCurrency(row.original.unitPrice),
   },
   {
     accessorKey: "unit",
-    header: "Satuan",
+    header: "Unit",
   },
   {
     accessorKey: "category",
@@ -80,9 +80,9 @@ export function ItemsTable({ data }: ItemsTableProps) {
       columns={columns}
       data={data}
       searchKey="itemName"
-      searchPlaceholder="Cari nama item..."
-      emptyTitle="Belum ada item"
-      emptyDescription="Mulai dengan menambahkan item baru"
+      searchPlaceholder="Search item..."
+      emptyTitle="No item"
+      emptyDescription="Start by adding item"
     />
   )
 }
