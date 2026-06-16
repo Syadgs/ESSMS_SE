@@ -3,6 +3,7 @@ import { redirect } from "next/navigation"
 import { getCustomers } from "@/actions/customer.actions"
 import { getItems } from "@/actions/item.actions"
 import { hasPermission } from "@/lib/permissions"
+import { decimalToNumber } from "@/lib/utils"
 import { Breadcrumb } from "@/components/layout/breadcrumb"
 import { PageHeader } from "@/components/shared/page-header"
 import { SOForm } from "@/components/sales-orders/so-form"
@@ -37,6 +38,7 @@ export default async function NewSalesOrderPage() {
             itemOptions={items.map((i) => ({
               value: i.id,
               label: `${i.itemCode} — ${i.itemName}`,
+              defaultUnitPrice: decimalToNumber(i.unitPrice),
             }))}
           />
         </CardContent>

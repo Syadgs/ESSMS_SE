@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
@@ -20,13 +21,115 @@ export type LineItemRow = {
   discount?: number
 }
 
+export type ItemSelectOption = SelectOption & {
+  defaultUnitPrice?: number
+}
+
 interface LineItemsFormProps {
   items: LineItemRow[]
-  itemOptions: SelectOption[]
+  itemOptions: ItemSelectOption[]
   onAdd: () => void
   onRemove: (index: number) => void
   onUpdate: (index: number, field: keyof LineItemRow, value: string | number) => void
   showDiscount?: boolean
+}
+
+function DecimalInput({
+  value,
+  onChange,
+  placeholder = "Enter price",
+}: {
+  value: number
+  onChange: (value: number) => void
+  placeholder?: string
+}) {
+  const [draft, setDraft] = useState("")
+  const [focused, setFocused] = useState(false)
+
+  const displayValue = focused ? draft : value === 0 ? "" : String(value)
+
+  return (
+    <Input
+      type="text"
+      inputMode="decimal"
+      placeholder={placeholder}
+      value={displayValue}
+      onFocus={() => {
+        setFocused(true)
+        setDraft(value === 0 ? "" : String(value))
+      }}
+      onChange={(e) => {
+        const raw = e.target.value
+        if (raw !== "" && !/^\d*\.?\d*$/.test(raw)) return
+        setDraft(raw)
+        if (raw === "" || raw === ".") {
+          onChange(0)
+          return
+        }
+        const num = parseFloat(raw)
+        if (!isNaN(num)) onChange(num)
+      }}
+      onBlur={() => {
+        setFocused(false)
+        if (draft === "" || draft === ".") {
+          onChange(0)
+          return
+        }
+        const num = parseFloat(draft)
+        onChange(isNaN(num) ? 0 : num)
+      }}
+    />
+  )
+}
+
+function IntegerInput({
+  value,
+  onChange,
+  min = 1,
+  placeholder = "1",
+}: {
+  value: number
+  onChange: (value: number) => void
+  min?: number
+  placeholder?: string
+}) {
+  const [draft, setDraft] = useState("")
+  const [focused, setFocused] = useState(false)
+
+  const displayValue = focused ? draft : value === 0 ? "" : String(value)
+
+  return (
+    <Input
+      type="text"
+      inputMode="numeric"
+      placeholder={placeholder}
+      value={displayValue}
+      onFocus={() => {
+        setFocused(true)
+        setDraft(value === 0 ? "" : String(value))
+      }}
+      onChange={(e) => {
+        const raw = e.target.value
+        if (raw !== "" && !/^\d*$/.test(raw)) return
+        setDraft(raw)
+        if (raw === "") {
+          onChange(0)
+          return
+        }
+        const num = parseInt(raw, 10)
+        if (!isNaN(num)) onChange(num)
+      }}
+      onBlur={() => {
+        setFocused(false)
+        if (draft === "") {
+          onChange(min)
+          return
+        }
+        const num = parseInt(draft, 10)
+        onChange(isNaN(num) || num < min ? min : num)
+      }}
+    />
+  )
 }
 
 export function LineItemsForm({
@@ -43,6 +146,14 @@ export function LineItemsForm({
     return sum + subtotal
   }, 0)
 
+  function handleItemSelect(index: number, itemId: string) {
+    onUpdate(index, "itemId", itemId)
+    const option = itemOptions.find((opt) => opt.value === itemId)
+    if (option?.defaultUnitPrice !== undefined) {
+      onUpdate(index, "unitPrice", option.defaultUnitPrice)
+    }
+  }
+
   return (
     <div className="space-y-4">
       <div className="rounded-md border overflow-hidden">
@@ -51,8 +162,8 @@ export function LineItemsForm({
             <tr>
               <th className="text-left p-3 font-medium">Item</th>
               <th className="text-left p-3 font-medium w-24">Qty</th>
-              <th className="text-left p-3 font-medium w-36">Harga</th>
-              {showDiscount && <th className="text-left p-3 font-medium w-24">Diskon %</th>}
+              <th className="text-left p-3 font-medium w-36">Unit Price</th>
+              {showDiscount && <th className="text-left p-3 font-medium w-24">Discount %</th>}
               <th className="text-right p-3 font-medium w-36">Subtotal</th>
               <th className="w-12" />
             </tr>
@@ -66,7 +177,7 @@ export function LineItemsForm({
                   <td className="p-2">
                     <Select
                       value={item.itemId}
-                      onValueChange={(v) => onUpdate(index, "itemId", v)}
+                      onValueChange={(v) => handleItemSelect(index, v)}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Select item" />
@@ -81,29 +192,24 @@ export function LineItemsForm({
                     </Select>
                   </td>
                   <td className="p-2">
-                    <Input
-                      type="number"
-                      min={1}
+                    <IntegerInput
                       value={item.quantity}
-                      onChange={(e) => onUpdate(index, "quantity", parseInt(e.target.value) || 0)}
+                      onChange={(value) => onUpdate(index, "quantity", value)}
                     />
                   </td>
                   <td className="p-2">
-                    <Input
-                      type="number"
-                      min={0}
+                    <DecimalInput
+                      key={`price-${index}-${item.itemId}`}
                       value={item.unitPrice}
-                      onChange={(e) => onUpdate(index, "unitPrice", parseFloat(e.target.value) || 0)}
+                      onChange={(value) => onUpdate(index, "unitPrice", value)}
                     />
                   </td>
                   {showDiscount && (
                     <td className="p-2">
-                      <Input
-                        type="number"
-                        min={0}
-                        max={100}
+                      <DecimalInput
                         value={item.discount ?? 0}
-                        onChange={(e) => onUpdate(index, "discount", parseFloat(e.target.value) || 0)}
+                        onChange={(value) => onUpdate(index, "discount", value)}
+                        placeholder="0"
                       />
                     </td>
                   )}

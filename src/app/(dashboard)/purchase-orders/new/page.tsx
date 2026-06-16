@@ -38,6 +38,7 @@ export default async function NewPurchaseOrderPage() {
             itemOptions={items.map((i) => ({
               value: i.id,
               label: `${i.itemCode} — ${i.itemName}`,
+              defaultUnitPrice: decimalToNumber(i.costPrice),
             }))}
           />
         </CardContent>

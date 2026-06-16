@@ -42,9 +42,11 @@ export function SOForm({ customers, itemOptions }: SOFormProps) {
   }
 
   function handleUpdate(index: number, field: keyof LineItemRow, value: string | number) {
-    const updated = [...items]
-    updated[index] = { ...updated[index], [field]: value }
-    setItems(updated)
+    setItems((prev) => {
+      const updated = [...prev]
+      updated[index] = { ...updated[index], [field]: value }
+      return updated
+    })
   }
 
   function handleSubmit(e: React.FormEvent) {
