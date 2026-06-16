@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import { Toaster } from "sonner"
+import { Providers } from "@/components/providers"
 import "./globals.css"
 
 export const metadata: Metadata = {
@@ -11,8 +12,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
-        {children}
-        <Toaster position="top-right" richColors closeButton />
+        <Providers>
+          {children}
+          <Toaster position="bottom-right" richColors closeButton />
+        </Providers>
       </body>
     </html>
   )

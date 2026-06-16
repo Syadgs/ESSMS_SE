@@ -1,17 +1,12 @@
 "use client"
 
+import { useEffect, useRef, useState } from "react"
 import { signOut } from "next-auth/react"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
-import { LogOut, Menu, User } from "lucide-react"
+import { ChevronDown, LogOut, Menu, User } from "lucide-react"
 import type { Role } from "@prisma/client"
+import { cn } from "@/lib/utils"
 
 const ROLE_LABELS: Record<Role, string> = {
   ADMIN: "Administrator",
@@ -32,6 +27,9 @@ interface TopbarProps {
 }
 
 export function Topbar({ userName, userEmail, userRole, onMenuClick }: TopbarProps) {
+  const [menuOpen, setMenuOpen] = useState(false)
+  const menuRef = useRef<HTMLDivElement>(null)
+
   const initials = userName
     .split(" ")
     .map((n) => n[0])
@@ -39,10 +37,38 @@ export function Topbar({ userName, userEmail, userRole, onMenuClick }: TopbarPro
     .slice(0, 2)
     .toUpperCase()
 
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setMenuOpen(false)
+      }
+    }
+
+    function handleEscape(event: KeyboardEvent) {
+      if (event.key === "Escape") setMenuOpen(false)
+    }
+
+    if (menuOpen) {
+      document.addEventListener("mousedown", handleClickOutside)
+      document.addEventListener("keydown", handleEscape)
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+      document.removeEventListener("keydown", handleEscape)
+    }
+  }, [menuOpen])
+
+  const handleSignOut = () => {
+    setMenuOpen(false)
+    signOut({ callbackUrl: "/login" })
+  }
+
   return (
-    <header className="sticky top-0 z-30 flex h-14 sm:h-16 items-center justify-between gap-4 border-b bg-white/95 backdrop-blur-sm px-4 sm:px-6 shadow-sm">
+    <header className="sticky top-0 z-40 flex h-14 sm:h-16 items-center justify-between gap-4 border-b bg-white px-4 sm:px-6 shadow-sm">
       <div className="flex items-center gap-3 min-w-0">
         <Button
+          type="button"
           variant="ghost"
           size="icon"
           className="lg:hidden shrink-0"
@@ -59,38 +85,68 @@ export function Topbar({ userName, userEmail, userRole, onMenuClick }: TopbarPro
         </div>
       </div>
 
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="flex items-center gap-2 sm:gap-3 h-auto py-2 px-2 sm:px-3">
-            <div className="text-right hidden sm:block">
-              <p className="text-sm font-medium leading-tight">{userName}</p>
-              <p className="text-xs text-muted-foreground">{ROLE_LABELS[userRole]}</p>
-            </div>
-            <Avatar className="h-8 w-8 shrink-0">
-              <AvatarFallback className="bg-navy-900 text-white text-xs">{initials}</AvatarFallback>
-            </Avatar>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-56">
-          <div className="px-2 py-1.5">
-            <p className="text-sm font-medium">{userName}</p>
-            <p className="text-xs text-muted-foreground truncate">{userEmail}</p>
+      <div className="relative shrink-0" ref={menuRef}>
+        <button
+          type="button"
+          onClick={() => setMenuOpen((prev) => !prev)}
+          aria-expanded={menuOpen}
+          aria-haspopup="menu"
+          aria-label="Open account menu"
+          className={cn(
+            "flex items-center gap-2 sm:gap-3 rounded-lg border bg-white px-2 py-2 sm:px-3",
+            "hover:bg-slate-50 transition-colors cursor-pointer",
+            menuOpen && "ring-2 ring-navy-900/20 border-navy-900/30"
+          )}
+        >
+          <div className="text-right hidden sm:block">
+            <p className="text-sm font-medium leading-tight text-left">{userName}</p>
+            <p className="text-xs text-muted-foreground text-left">{ROLE_LABELS[userRole]}</p>
           </div>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem disabled>
-            <User className="mr-2 h-4 w-4" />
-            Profilee
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            className="text-destructive focus:text-destructive"
-            onClick={() => signOut({ callbackUrl: "/login" })}
+          <Avatar className="h-8 w-8 shrink-0">
+            <AvatarFallback className="bg-navy-900 text-white text-xs">{initials}</AvatarFallback>
+          </Avatar>
+          <ChevronDown
+            className={cn(
+              "h-4 w-4 shrink-0 text-muted-foreground transition-transform",
+              menuOpen && "rotate-180"
+            )}
+          />
+        </button>
+
+        {menuOpen && (
+          <div
+            role="menu"
+            className="absolute right-0 top-[calc(100%+8px)] z-[9999] w-56 rounded-lg border bg-white py-1 shadow-xl"
           >
-            <LogOut className="mr-2 h-4 w-4" />
-            Sign out
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+            <div className="px-3 py-2 border-b">
+              <p className="text-sm font-medium">{userName}</p>
+              <p className="text-xs text-muted-foreground truncate">{userEmail}</p>
+            </div>
+
+            <button
+              type="button"
+              role="menuitem"
+              disabled
+              className="flex w-full items-center gap-2 px-3 py-2 text-sm text-muted-foreground cursor-not-allowed opacity-50"
+            >
+              <User className="h-4 w-4" />
+              Profile
+            </button>
+
+            <div className="my-1 border-t" />
+
+            <button
+              type="button"
+              role="menuitem"
+              onClick={handleSignOut}
+              className="flex w-full items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+            >
+              <LogOut className="h-4 w-4" />
+              Sign out
+            </button>
+          </div>
+        )}
+      </div>
     </header>
   )
 }
